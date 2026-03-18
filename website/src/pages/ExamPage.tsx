@@ -37,7 +37,14 @@ export default function ExamPage() {
 
   const handleSubmit = () => {
     const s = questions.reduce((acc, q, i) => (answers[i] === q.correct ? acc + 1 : acc), 0)
-    saveExamScore(examId || '1', s, questions.length)
+    // Compute per-domain breakdown
+    const domainBreakdown: Record<string, { correct: number; total: number }> = {}
+    questions.forEach((q, i) => {
+      if (!domainBreakdown[q.domain]) domainBreakdown[q.domain] = { correct: 0, total: 0 }
+      domainBreakdown[q.domain].total++
+      if (answers[i] === q.correct) domainBreakdown[q.domain].correct++
+    })
+    saveExamScore(examId || '1', s, questions.length, domainBreakdown)
     setPhase('review')
     setCurrent(0)
   }
