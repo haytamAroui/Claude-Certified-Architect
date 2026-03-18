@@ -19,11 +19,11 @@ export default function Dashboard() {
   const domainStats = getDomainStats()
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-fade-in">
       {/* Hero */}
       <div className="bg-gradient-to-br from-primary/20 via-surface-light to-accent/10 rounded-2xl p-8 border border-surface-lighter">
         <h1 className="text-3xl font-bold text-white mb-2">
-          Claude Certified Architect
+          <span className="gradient-text">Claude Certified Architect</span>
         </h1>
         <p className="text-slate-300 text-lg mb-6">
           Foundations Exam — Study Guide & Practice
@@ -48,13 +48,13 @@ export default function Dashboard() {
           <BookOpen className="w-5 h-5 text-primary" />
           Courses
         </h2>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-4 stagger-children">
           {courses.map((course) => {
             const isCompleted = progress.completedCourses.includes(course.id)
             return (
               <div
                 key={course.id}
-                className="bg-surface-light border border-surface-lighter rounded-xl p-5 hover:border-primary/30 transition-all group"
+                className="bg-surface-light border border-surface-lighter rounded-xl p-5 hover:border-primary/30 transition-all group card-hover"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
