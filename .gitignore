@@ -16,3 +16,6 @@ desktop.ini
 # Personal notes
 notes/
 scratch/
+
+# AZCLAUDE — machine-specific hook paths
+.claude/settings.local.json

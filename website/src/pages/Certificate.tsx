@@ -1,18 +1,20 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Award, Download, Trophy, CheckCircle, Lock } from 'lucide-react'
 import { useProgress } from '../data/useProgress'
+import { courses } from '../data/courses'
 
 export default function Certificate() {
   const { progress } = useProgress()
+  const totalCourses = courses.length
 
   // Check if user has passed at least one exam
   const bestScore = Object.values(progress.examScores).reduce(
     (best, exam) => (exam.score > best.score ? exam : best),
     { score: 0, total: 60, date: '' }
   )
-  const hasPassed = bestScore.score >= 43
+  const hasPassed = bestScore.score >= Math.ceil(bestScore.total * 0.72)
   const completedCourses = progress.completedCourses.length
-  const allCoursesComplete = completedCourses >= 6
+  const allCoursesComplete = completedCourses >= totalCourses
 
   const userName = 'Study Candidate' // Could be made editable
   const dateStr = bestScore.date
@@ -35,7 +37,7 @@ export default function Certificate() {
           </div>
           <h1 className="text-2xl font-bold text-white mb-3">Certificate Locked</h1>
           <p className="text-slate-400 mb-6">
-            Complete all 6 courses and pass a mock exam (43/60+) to unlock your certificate of completion.
+            Complete all {totalCourses} courses and pass a mock exam (43/60+) to unlock your certificate of completion.
           </p>
           <div className="space-y-3 text-left bg-surface/50 rounded-lg p-5 max-w-sm mx-auto">
             <div className="flex items-center gap-2">
@@ -45,7 +47,7 @@ export default function Certificate() {
                 <div className="w-4 h-4 rounded-full border border-slate-600" />
               )}
               <span className={`text-sm ${allCoursesComplete ? 'text-success' : 'text-slate-400'}`}>
-                Complete all 6 courses ({completedCourses}/6)
+                Complete all {totalCourses} courses ({completedCourses}/{totalCourses})
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -83,7 +85,7 @@ export default function Certificate() {
       {/* Certificate */}
       <div
         id="certificate"
-        className="bg-gradient-to-br from-surface-light via-surface-light to-accent/5 border-2 border-primary/30 rounded-2xl p-10 relative overflow-hidden"
+        className="bg-gradient-to-br from-surface-light via-surface-light to-accent/5 border-2 border-primary/30 rounded-2xl p-6 sm:p-10 relative overflow-hidden"
       >
         {/* Corner decorations */}
         <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-primary/40 rounded-tl-2xl" />
@@ -104,17 +106,17 @@ export default function Certificate() {
           <p className="text-slate-400 text-sm mb-1">Awarded to</p>
           <p className="text-2xl font-semibold text-white mb-8">{userName}</p>
 
-          <div className="flex justify-center gap-8 mb-8">
+          <div className="flex justify-center gap-4 sm:gap-8 mb-8 flex-wrap">
             <div className="text-center">
-              <p className="text-2xl font-bold text-primary">{bestScore.score}/{bestScore.total}</p>
+              <p className="text-xl sm:text-2xl font-bold text-primary">{bestScore.score}/{bestScore.total}</p>
               <p className="text-xs text-slate-500">Exam Score</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-success">{completedCourses}/6</p>
+              <p className="text-xl sm:text-2xl font-bold text-success">{completedCourses}/{totalCourses}</p>
               <p className="text-xs text-slate-500">Courses</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-accent">
+              <p className="text-xl sm:text-2xl font-bold text-accent">
                 {Math.round((bestScore.score / bestScore.total) * 1000)}
               </p>
               <p className="text-xs text-slate-500">Score (out of 1000)</p>
@@ -131,7 +133,7 @@ export default function Certificate() {
       </div>
 
       {/* Actions */}
-      <div className="flex justify-center gap-4 mt-8">
+      <div className="flex justify-center gap-3 sm:gap-4 mt-6 sm:mt-8 flex-wrap">
         <button
           onClick={() => window.print()}
           className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"

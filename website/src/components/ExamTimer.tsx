@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Clock, AlertTriangle } from 'lucide-react'
 
 interface ExamTimerProps {
@@ -9,21 +9,27 @@ interface ExamTimerProps {
 
 export default function ExamTimer({ durationMinutes, isRunning, onTimeUp }: ExamTimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(durationMinutes * 60)
-
-  const handleTimeUp = useCallback(onTimeUp, [onTimeUp])
+  const onTimeUpRef = useRef(onTimeUp)
+  onTimeUpRef.current = onTimeUp
 
   useEffect(() => {
     setSecondsLeft(durationMinutes * 60)
   }, [durationMinutes])
 
+  // Fire callback when timer hits zero
   useEffect(() => {
-    if (!isRunning || secondsLeft <= 0) return
+    if (secondsLeft === 0 && isRunning) {
+      onTimeUpRef.current()
+    }
+  }, [secondsLeft, isRunning])
+
+  useEffect(() => {
+    if (!isRunning) return
 
     const interval = setInterval(() => {
       setSecondsLeft((prev) => {
         if (prev <= 1) {
           clearInterval(interval)
-          handleTimeUp()
           return 0
         }
         return prev - 1
@@ -31,7 +37,7 @@ export default function ExamTimer({ durationMinutes, isRunning, onTimeUp }: Exam
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [isRunning, secondsLeft, handleTimeUp])
+  }, [isRunning])
 
   const minutes = Math.floor(secondsLeft / 60)
   const seconds = secondsLeft % 60
@@ -41,13 +47,17 @@ export default function ExamTimer({ durationMinutes, isRunning, onTimeUp }: Exam
   const isCritical = secondsLeft < 60 // under 1 minute
 
   return (
-    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-mono transition-colors ${
-      isCritical
-        ? 'bg-danger/15 text-danger animate-pulse'
-        : isLow
-          ? 'bg-warning/15 text-warning'
-          : 'bg-surface-lighter text-slate-300'
-    }`}>
+    <div
+      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-mono transition-colors ${
+        isCritical
+          ? 'bg-danger/15 text-danger animate-pulse'
+          : isLow
+            ? 'bg-warning/15 text-warning'
+            : 'bg-surface-lighter text-slate-300'
+      }`}
+      role="timer"
+      aria-label={`${minutes} minutes ${seconds} seconds remaining`}
+    >
       {isLow ? (
         <AlertTriangle className="w-4 h-4" />
       ) : (
@@ -56,7 +66,7 @@ export default function ExamTimer({ durationMinutes, isRunning, onTimeUp }: Exam
       <span>
         {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
       </span>
-      <div className="w-16 h-1.5 bg-surface rounded-full overflow-hidden">
+      <div className="w-16 h-1.5 bg-surface rounded-full overflow-hidden" aria-hidden="true">
         <div
           className={`h-full rounded-full transition-all duration-1000 ${
             isCritical ? 'bg-danger' : isLow ? 'bg-warning' : 'bg-primary'

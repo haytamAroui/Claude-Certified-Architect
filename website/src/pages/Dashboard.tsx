@@ -4,28 +4,28 @@ import { courses } from '../data/courses'
 import { useProgress } from '../data/useProgress'
 
 const domainNames: Record<string, string> = {
-  'Domain 1': 'Agentic Architecture',
-  'Domain 2': 'Tool Design & MCP',
-  'Domain 3': 'Claude Code Config',
-  'Domain 4': 'Prompt Engineering',
-  'Domain 5': 'Context & Reliability',
+  D1: 'Agentic Architecture',
+  D2: 'Tool Design & MCP',
+  D3: 'Claude Code Config',
+  D4: 'Prompt Engineering',
+  D5: 'Context & Reliability',
 }
 
 export default function Dashboard() {
   const { progress, toggleCourse, getDomainStats } = useProgress()
   const completedCount = progress.completedCourses.length
-  const totalCourses = 6
+  const totalCourses = courses.length
   const progressPct = Math.round((completedCount / totalCourses) * 100)
   const domainStats = getDomainStats()
 
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-primary/20 via-surface-light to-accent/10 rounded-2xl p-8 border border-surface-lighter">
-        <h1 className="text-3xl font-bold text-white mb-2">
+      <div className="bg-gradient-to-br from-primary/20 via-surface-light to-accent/10 rounded-2xl p-5 sm:p-8 border border-surface-lighter">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
           <span className="gradient-text">Claude Certified Architect</span>
         </h1>
-        <p className="text-slate-300 text-lg mb-6">
+        <p className="text-slate-300 text-base sm:text-lg mb-4 sm:mb-6">
           Foundations Exam — Study Guide & Practice
         </p>
 
@@ -96,7 +96,7 @@ export default function Dashboard() {
       </div>
 
       {/* Exams + Resources */}
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid gap-4 md:grid-cols-2">
         {/* Mock Exams */}
         <div>
           <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">

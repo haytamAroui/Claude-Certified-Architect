@@ -61,15 +61,6 @@ export function useProgress() {
     }))
   }, [])
 
-  const markCourseComplete = (courseId: string) => {
-    setProgress((p) => ({
-      ...p,
-      completedCourses: p.completedCourses.includes(courseId)
-        ? p.completedCourses
-        : [...p.completedCourses, courseId],
-    }))
-  }
-
   const toggleCourse = (courseId: string) => {
     setProgress((p) => ({
       ...p,
@@ -103,5 +94,5 @@ export function useProgress() {
     return stats
   }
 
-  return { progress, markCourseComplete, toggleCourse, saveExamScore, getDomainStats }
+  return { progress, toggleCourse, saveExamScore, getDomainStats }
 }

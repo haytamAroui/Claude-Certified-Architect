@@ -65,14 +65,14 @@ export default function StudyMaterials() {
             className="w-full pl-10 pr-4 py-2.5 bg-surface-light border border-surface-lighter rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/25 transition-colors"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-slate-500" />
-          <div className="flex flex-wrap gap-1.5">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 -mb-1">
+          <Filter className="w-4 h-4 text-slate-500 shrink-0" />
+          <div className="flex gap-1.5">
             {domains.map((d) => (
               <button
                 key={d}
                 onClick={() => setSelectedDomain(d)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
                   selectedDomain === d
                     ? 'bg-primary/20 text-primary-light border border-primary/30'
                     : 'bg-surface-light text-slate-400 border border-surface-lighter hover:border-slate-500'
@@ -113,23 +113,23 @@ export default function StudyMaterials() {
                 key={courseId}
                 className="bg-surface-light border border-surface-lighter rounded-xl overflow-hidden"
               >
-                <div className="px-5 py-3 bg-surface-lighter/50 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="px-4 sm:px-5 py-3 bg-surface-lighter/50 flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2 min-w-0 flex-wrap">
                     <span className="text-xs font-medium text-slate-500 bg-surface px-2 py-0.5 rounded">
                       {course.domain}
                     </span>
                     <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">
                       {course.weight}
                     </span>
-                    <h3 className="text-white font-semibold text-sm ml-1">
+                    <h3 className="text-white font-semibold text-sm ml-1 truncate">
                       Course {course.id}: {course.title}
                     </h3>
                   </div>
                   <Link
                     to={`/course/${courseId}`}
-                    className="text-xs text-primary-light hover:text-primary flex items-center gap-1 transition-colors"
+                    className="text-xs text-primary-light hover:text-primary flex items-center gap-1 transition-colors shrink-0"
                   >
-                    Open course <ArrowRight className="w-3 h-3" />
+                    Open <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
                 <div className="divide-y divide-surface-lighter">

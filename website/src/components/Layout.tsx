@@ -1,15 +1,7 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { BookOpen, FileQuestion, Map, Home, Menu, X, ExternalLink, Search, Award } from 'lucide-react'
-
-const courses = [
-  { id: '1', title: 'Agentic Architecture', weight: '27%' },
-  { id: '2', title: 'Tool Design & MCP', weight: '20%' },
-  { id: '3', title: 'Claude Code Config', weight: '20%' },
-  { id: '4', title: 'Prompt Engineering', weight: '18%' },
-  { id: '5', title: 'Context & Reliability', weight: '15%' },
-  { id: '6', title: 'Exam Edge Cases', weight: 'Bonus' },
-]
+import { courses } from '../data/courses'
 
 const exams = [
   { id: '1', title: 'Mock Exam 1' },
@@ -152,7 +144,7 @@ export default function Layout() {
           <span className="text-sm font-medium text-white">Claude Certified Architect</span>
         </div>
 
-        <div className="p-6 lg:p-10 max-w-5xl mx-auto">
+        <div className="p-4 sm:p-6 lg:p-10 max-w-5xl mx-auto">
           <Outlet />
         </div>
       </main>
