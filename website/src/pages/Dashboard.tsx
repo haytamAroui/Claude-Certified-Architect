@@ -30,7 +30,7 @@ export default function Dashboard() {
         </p>
 
         {/* Progress bar */}
-        <div className="bg-surface/50 rounded-full h-3 mb-2">
+        <div className="bg-surface/50 rounded-full h-3 mb-2" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100} aria-label={`Course progress: ${progressPct}%`}>
           <div
             className="bg-gradient-to-r from-primary to-accent h-3 rounded-full transition-all duration-500"
             style={{ width: `${progressPct}%` }}
@@ -184,7 +184,7 @@ export default function Dashboard() {
                       {stats.correct}/{stats.total} ({pct}%)
                     </span>
                   </div>
-                  <div className="h-2 bg-surface rounded-full overflow-hidden">
+                  <div className="h-2 bg-surface rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${domainNames[domain] || domain}: ${pct}%`}>
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         isStrong ? 'bg-success' : isWeak ? 'bg-danger' : 'bg-warning'

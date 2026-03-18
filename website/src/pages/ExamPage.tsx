@@ -27,6 +27,17 @@ export default function ExamPage() {
   const isSimulation = mode === 'simulation'
 
   const question = questions[current]
+
+  // Guard: invalid exam ID
+  if (questions.length === 0) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-slate-400">Exam not found</p>
+        <Link to="/" className="text-primary-light mt-2 inline-block">Back to Dashboard</Link>
+      </div>
+    )
+  }
+
   const totalAnswered = Object.keys(answers).length
   const score = useMemo(() => {
     if (phase !== 'review') return 0

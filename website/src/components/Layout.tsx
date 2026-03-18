@@ -24,7 +24,11 @@ export default function Layout() {
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          role="dialog"
+          aria-label="Navigation menu"
+          aria-modal="true"
           onClick={() => setSidebarOpen(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setSidebarOpen(false) }}
         />
       )}
 
@@ -138,6 +142,7 @@ export default function Layout() {
           <button
             onClick={() => setSidebarOpen(true)}
             className="p-2 rounded-lg hover:bg-surface-lighter text-slate-400"
+            aria-label="Open navigation menu"
           >
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
