@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
-import { BookOpen, FileQuestion, Map, Home, Menu, X, ExternalLink, Search, Award, Github, Sun, Moon } from 'lucide-react'
+import { BookOpen, FileQuestion, Map, Home, Menu, X, ExternalLink, Search, Award, Github, Sun, Moon, Star } from 'lucide-react'
 import { courses } from '../data/courses'
 
 function useTheme() {
@@ -24,9 +24,24 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
       : 'text-slate-400 hover:text-slate-200 hover:bg-surface-lighter'
   }`
 
+function useStarPopup() {
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    if (localStorage.getItem('star-dismissed')) return
+    const t = setTimeout(() => setVisible(true), 4000)
+    return () => clearTimeout(t)
+  }, [])
+  const dismiss = () => {
+    setVisible(false)
+    localStorage.setItem('star-dismissed', '1')
+  }
+  return { visible, dismiss }
+}
+
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { light, toggle: toggleTheme } = useTheme()
+  const { visible: starVisible, dismiss: dismissStar } = useStarPopup()
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -151,6 +166,15 @@ export default function Layout() {
             <ExternalLink className="w-4 h-4" />
             Register for Exam
           </a>
+          <a
+            href="https://buymeacoffee.com/haytamaroui"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 rounded-lg text-yellow-400 text-sm font-medium transition-colors"
+          >
+            <span className="text-base leading-none">🪙</span>
+            Buy me tokens
+          </a>
           <div className="flex items-center justify-between px-3">
             <span className="text-xs text-slate-500">Created by <span className="text-slate-400">Haytam Aroui</span></span>
             <a
@@ -165,6 +189,34 @@ export default function Layout() {
           </div>
         </div>
       </aside>
+
+      {/* Star popup */}
+      {starVisible && (
+        <div className="fixed bottom-5 right-5 z-50 flex items-start gap-3 bg-surface-light border border-surface-lighter rounded-xl shadow-2xl p-4 max-w-xs animate-in slide-in-from-bottom-4 fade-in duration-300">
+          <Star className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" fill="currentColor" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-white leading-snug">Found this useful?</p>
+            <p className="text-xs text-slate-400 mt-0.5">Give the repo a star on GitHub — it helps others find it!</p>
+            <a
+              href="https://github.com/haytamAroui/Claude-Certified-Architect"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={dismissStar}
+              className="inline-flex items-center gap-1.5 mt-2 text-xs font-medium text-yellow-400 hover:text-yellow-300 transition-colors"
+            >
+              <Github className="w-3.5 h-3.5" />
+              Star on GitHub
+            </a>
+          </div>
+          <button
+            onClick={dismissStar}
+            className="text-slate-500 hover:text-slate-300 transition-colors shrink-0"
+            aria-label="Dismiss"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto">

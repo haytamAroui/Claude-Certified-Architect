@@ -296,5 +296,11 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 <p align="center">
   <strong>Good luck on your exam! </strong><br/>
-  <em>If this guide helped you, consider giving it a star.</em>
+  <em>If this guide helped you, consider giving it a star ⭐ or buying me tokens.</em>
+</p>
+
+<p align="center">
+  <a href="https://buymeacoffee.com/haytamaroui" target="_blank">
+    <img src="https://img.shields.io/badge/Buy%20me%20tokens-🪙-yellow?style=for-the-badge" alt="Buy me tokens"/>
+  </a>
 </p>
