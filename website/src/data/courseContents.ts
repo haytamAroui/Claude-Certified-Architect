@@ -2761,7 +2761,7 @@ D) Switch both to batch processing with a timeout fallback to real-time
 
 ### Day 1-2: Course 1 — Agentic Architecture & Orchestration (27%)
 
-**File:** [Course 1](../courses/course-1-agentic-architecture.md)
+**File:** [Course 1](/course/1)
 
 This is the **highest-weighted domain**. Start here, no exceptions.
 
@@ -2786,7 +2786,7 @@ This is the **highest-weighted domain**. Start here, no exceptions.
 
 ### Day 3: Course 2 — Tool Design & MCP Integration (18%)
 
-**File:** [Course 2](../courses/course-2-tool-design-mcp.md)
+**File:** [Course 2](/course/2)
 
 Builds directly on Course 1. Tool design is tightly coupled with agent architecture.
 
@@ -2813,7 +2813,7 @@ Builds directly on Course 1. Tool design is tightly coupled with agent architect
 
 ### Day 4-5: Course 3 — Claude Code Configuration & Workflows (20%)
 
-**File:** [Course 3](../courses/course-3-claude-code-config.md)
+**File:** [Course 3](/course/3)
 
 Very practical and testable. Many questions are about config file specifics.
 
@@ -2837,7 +2837,7 @@ Very practical and testable. Many questions are about config file specifics.
 
 ### Day 6-7: Course 4 — Prompt Engineering & Structured Output (20%)
 
-**File:** [Course 4](../courses/course-4-prompt-engineering.md)
+**File:** [Course 4](/course/4)
 
 Overlaps with Course 2 (tool descriptions) and Course 3 (CI prompts).
 
@@ -2865,7 +2865,7 @@ Overlaps with Course 2 (tool descriptions) and Course 3 (CI prompts).
 
 ### Day 8: Course 5 — Context Management & Reliability (15%)
 
-**File:** [Course 5](../courses/course-5-context-reliability.md)
+**File:** [Course 5](/course/5)
 
 Lowest weight but ties all other domains together. Don't skip it.
 
@@ -2889,7 +2889,7 @@ Lowest weight but ties all other domains together. Don't skip it.
 
 ### Day 9: Course 6 — Exam Edge Cases & Traps (Supplementary)
 
-**File:** [Course 6](../courses/course-6-exam-edge-cases.md)
+**File:** [Course 6](/course/6)
 
 Read this **after** Courses 1-5. It covers the 6 most common exam traps.
 
@@ -2909,7 +2909,7 @@ Read this **after** Courses 1-5. It covers the 6 most common exam traps.
 
 ### Day 10-11: Mock Exam 1
 
-**File:** [Mock Exam 1](../exams/mock-exam.md) — 60 questions, all 6 scenarios
+**File:** [Mock Exam 1](/exam/1) — 60 questions, all 6 scenarios
 
 | Step | Action | Time |
 |---|---|---|
@@ -2925,7 +2925,7 @@ Read this **after** Courses 1-5. It covers the 6 most common exam traps.
 
 ### Day 12-13: Mock Exam 2
 
-**File:** [Mock Exam 2](../exams/mock-exam-2.md) — 60 new questions, different scenario mix
+**File:** [Mock Exam 2](/exam/2) — 60 new questions, different scenario mix
 
 | Step | Action | Time |
 |---|---|---|
