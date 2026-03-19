@@ -1,7 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
-import { BookOpen, FileQuestion, Map, Home, Menu, X, ExternalLink, Search, Award, Github } from 'lucide-react'
+import { BookOpen, FileQuestion, Map, Home, Menu, X, ExternalLink, Search, Award, Github, Sun, Moon } from 'lucide-react'
 import { courses } from '../data/courses'
+
+function useTheme() {
+  const [light, setLight] = useState(() => localStorage.getItem('theme') === 'light')
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', light)
+    localStorage.setItem('theme', light ? 'light' : 'dark')
+  }, [light])
+  return { light, toggle: () => setLight(p => !p) }
+}
 
 const exams = [
   { id: '1', title: 'Mock Exam 1' },
@@ -17,6 +26,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { light, toggle: toggleTheme } = useTheme()
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -40,15 +50,24 @@ export default function Layout() {
       >
         {/* Logo */}
         <div className="p-5 border-b border-surface-lighter">
-          <NavLink to="/" className="flex items-center gap-3" onClick={() => setSidebarOpen(false)}>
-            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <BookOpen className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-base font-bold text-white leading-tight">Claude Certified</h1>
-              <p className="text-xs text-slate-400">Architect Study Guide</p>
-            </div>
-          </NavLink>
+          <div className="flex items-center justify-between">
+            <NavLink to="/" className="flex items-center gap-3" onClick={() => setSidebarOpen(false)}>
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-base font-bold text-white leading-tight">Claude Certified</h1>
+                <p className="text-xs text-slate-400">Architect Study Guide</p>
+              </div>
+            </NavLink>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-surface-lighter transition-colors"
+              aria-label={light ? 'Switch to dark mode' : 'Switch to light mode'}
+            >
+              {light ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
 
         {/* Navigation */}
