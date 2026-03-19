@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
-import { BookOpen, FileQuestion, Map, Home, Menu, X, ExternalLink, Search, Award } from 'lucide-react'
+import { BookOpen, FileQuestion, Map, Home, Menu, X, ExternalLink, Search, Award, Github } from 'lucide-react'
 import { courses } from '../data/courses'
 
 const exams = [
@@ -122,7 +122,7 @@ export default function Layout() {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-surface-lighter">
+        <div className="p-4 border-t border-surface-lighter space-y-3">
           <a
             href="https://anthropic.skilljar.com/claude-certified-architect-foundations-access-request"
             target="_blank"
@@ -132,6 +132,18 @@ export default function Layout() {
             <ExternalLink className="w-4 h-4" />
             Register for Exam
           </a>
+          <div className="flex items-center justify-between px-3">
+            <span className="text-xs text-slate-500">Created by <span className="text-slate-400">Haytam Aroui</span></span>
+            <a
+              href="https://github.com/haytamAroui/Claude-Certified-Architect"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-500 hover:text-slate-300 transition-colors"
+              aria-label="GitHub repository"
+            >
+              <Github className="w-4 h-4" />
+            </a>
+          </div>
         </div>
       </aside>
 
