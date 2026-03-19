@@ -7,6 +7,7 @@ export interface DomainScore {
 
 interface Progress {
   completedCourses: string[]
+  completedModules: Record<string, number[]>
   examScores: Record<string, { score: number; total: number; date: string; domainBreakdown?: Record<string, DomainScore> }>
   studyStreak: number
   lastStudyDate: string | null
@@ -21,13 +22,14 @@ function loadProgress(): Progress {
       const parsed = JSON.parse(raw)
       return {
         completedCourses: parsed.completedCourses || [],
+        completedModules: parsed.completedModules || {},
         examScores: parsed.examScores || {},
         studyStreak: parsed.studyStreak || 0,
         lastStudyDate: parsed.lastStudyDate || null,
       }
     }
-  } catch {}
-  return { completedCourses: [], examScores: {}, studyStreak: 0, lastStudyDate: null }
+  } catch { /* corrupt localStorage — reset to defaults */ }
+  return { completedCourses: [], completedModules: {}, examScores: {}, studyStreak: 0, lastStudyDate: null }
 }
 
 function saveProgress(progress: Progress) {
@@ -38,28 +40,28 @@ function getToday(): string {
   return new Date().toISOString().split('T')[0]
 }
 
+function initProgress(): Progress {
+  const base = loadProgress()
+  const today = getToday()
+  if (base.lastStudyDate === today) return base
+
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const yesterdayStr = yesterday.toISOString().split('T')[0]
+
+  return {
+    ...base,
+    studyStreak: base.lastStudyDate === yesterdayStr ? base.studyStreak + 1 : 1,
+    lastStudyDate: today,
+  }
+}
+
 export function useProgress() {
-  const [progress, setProgress] = useState<Progress>(loadProgress)
+  const [progress, setProgress] = useState<Progress>(initProgress)
 
   useEffect(() => {
     saveProgress(progress)
   }, [progress])
-
-  // Update streak on mount
-  useEffect(() => {
-    const today = getToday()
-    if (progress.lastStudyDate === today) return
-
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 1)
-    const yesterdayStr = yesterday.toISOString().split('T')[0]
-
-    setProgress((p) => ({
-      ...p,
-      studyStreak: p.lastStudyDate === yesterdayStr ? p.studyStreak + 1 : 1,
-      lastStudyDate: today,
-    }))
-  }, [])
 
   const toggleCourse = (courseId: string) => {
     setProgress((p) => ({
@@ -68,6 +70,27 @@ export function useProgress() {
         ? p.completedCourses.filter((id) => id !== courseId)
         : [...p.completedCourses, courseId],
     }))
+  }
+
+  const toggleModule = (courseId: string, moduleIndex: number, totalModules: number) => {
+    setProgress((p) => {
+      const current = p.completedModules[courseId] || []
+      const isComplete = current.includes(moduleIndex)
+      const updated = isComplete
+        ? current.filter((i) => i !== moduleIndex)
+        : [...current, moduleIndex]
+      const allDone = updated.length >= totalModules
+      const courseCompleted = p.completedCourses.includes(courseId)
+      return {
+        ...p,
+        completedModules: { ...p.completedModules, [courseId]: updated },
+        completedCourses: allDone && !courseCompleted
+          ? [...p.completedCourses, courseId]
+          : !allDone && courseCompleted
+          ? p.completedCourses.filter((id) => id !== courseId)
+          : p.completedCourses,
+      }
+    })
   }
 
   const saveExamScore = (examId: string, score: number, total: number, domainBreakdown?: Record<string, DomainScore>) => {
@@ -94,5 +117,5 @@ export function useProgress() {
     return stats
   }
 
-  return { progress, toggleCourse, saveExamScore, getDomainStats }
+  return { progress, toggleCourse, toggleModule, saveExamScore, getDomainStats }
 }

@@ -719,6 +719,37 @@ Agents may prefer built-in tools (like \`Grep\`) over more capable MCP tools if 
 
 **Prefer community MCP servers** for standard integrations (Jira, GitHub, Slack). Build **custom servers** only for team-specific workflows.
 
+### MCP Resources — Content Catalogs
+
+MCP servers can expose **resources** in addition to tools. Resources are read-only content catalogs that give agents visibility into available data **without making exploratory tool calls**.
+
+| MCP Concept | Purpose | Example |
+|---|---|---|
+| **Tools** | Actions the agent can take | \`get_customer\`, \`process_refund\` |
+| **Resources** | Data catalogs the agent can browse | Issue summaries, DB schemas, doc hierarchies |
+
+\`\`\`python
+# MCP server exposes resources
+resources = [
+    {
+        "uri": "jira://project/SUPPORT/issues",
+        "name": "Support Issues",
+        "description": "All open support tickets with ID, status, and summary"
+    },
+    {
+        "uri": "db://schema/customers",
+        "name": "Customer Schema",
+        "description": "Table structure: id, name, email, plan, created_at"
+    }
+]
+\`\`\`
+
+> **Exam focus:** Resources reduce exploratory tool calls. Instead of the agent calling \`list_tables\` → \`describe_table\` → \`describe_table\` (3 calls), it reads the DB schema resource directly (0 calls). This saves tokens and reduces latency.
+
+**When to use resources vs tools:**
+- **Resources**: Static or slowly-changing data (schemas, documentation, catalogs, configuration)
+- **Tools**: Dynamic operations (queries, mutations, API calls)
+
 ---
 
 ## Module 2.5 — Built-in Tools
@@ -1469,6 +1500,44 @@ Track what code constructs trigger findings for systematic analysis:
 \`\`\`
 
 When developers dismiss findings, you can analyze which \`detected_pattern\` values have high dismissal rates and improve prompts for those patterns.
+
+### Pydantic Validation
+
+Use **Pydantic** (Python) for schema validation when processing \`tool_use\` outputs:
+
+\`\`\`python
+from pydantic import BaseModel, Field
+from typing import Optional
+from enum import Enum
+
+class Category(str, Enum):
+    invoice = "invoice"
+    receipt = "receipt"
+    contract = "contract"
+    other = "other"
+
+class Extraction(BaseModel):
+    title: str
+    category: Category
+    amount: Optional[float] = Field(None, description="Nullable if not in document")
+    date: Optional[str] = None
+    confidence: float = Field(ge=0.0, le=1.0)
+
+# Validate tool_use output
+try:
+    result = Extraction(**tool_output)
+except ValidationError as e:
+    # Retry with specific errors attached
+    retry_with_feedback(document, tool_output, str(e))
+\`\`\`
+
+> **Exam focus:** Pydantic catches **semantic validation errors** (wrong types, out-of-range values, missing required fields) that JSON schema alone misses. Tool use eliminates syntax errors; Pydantic eliminates semantic errors. Both together provide comprehensive validation.
+
+| Validation Layer | Catches | Example |
+|---|---|---|
+| JSON Schema (tool_use) | Syntax: malformed JSON, wrong types | String where number expected |
+| Pydantic | Semantic: invalid values, business rules | Amount = -500, date in future |
+| Custom logic | Domain: cross-field consistency | Line items don't sum to total |
 
 ---
 
@@ -2525,7 +2594,151 @@ Answer these instantly — if you hesitate, review the relevant trap:
 10. Subagent timeout. Return \`{"error": "failed"}\`? **Good enough?**
     → No. Return structured context: failure type, partial results, alternatives.
 
-**If you got all 10 right instantly → you're exam-ready.**`,
+**If you got all 10 right instantly → you're exam-ready.**
+
+---
+
+## Scenario Practice: Customer Support Agent
+
+*You are building a customer support resolution agent using the Claude Agent SDK. The agent handles returns, billing disputes, and account issues through custom MCP tools (\`get_customer\`, \`lookup_order\`, \`process_refund\`, \`escalate_to_human\`). Your target is 80%+ first-contact resolution.*
+
+**SP-1:** Production data shows that in 12% of cases, the agent skips \`get_customer\` and calls \`lookup_order\` using only the customer's stated name, occasionally leading to misidentified accounts and incorrect refunds. What change most effectively addresses this?
+
+A) Add a programmatic prerequisite that blocks \`lookup_order\` and \`process_refund\` until \`get_customer\` has returned a verified customer ID
+B) Enhance the system prompt to state that customer verification via \`get_customer\` is mandatory before any order operations
+C) Add few-shot examples showing the agent always calling \`get_customer\` first
+D) Implement a routing classifier that pre-selects tools per request type
+
+**Answer: A** — When a specific tool sequence is required for critical business logic (like verifying identity before processing refunds), programmatic enforcement (hooks/prerequisites) provides deterministic guarantees that prompt-based approaches cannot. Options B and C rely on probabilistic LLM compliance, which is insufficient when errors have financial consequences. *(Domains: D1, D2)*
+
+**SP-2:** Your agent achieves 55% first-contact resolution, well below the 80% target. Logs show it escalates straightforward cases (standard damage replacements with photo evidence) while attempting to handle complex policy exceptions autonomously. What's the most effective way to improve escalation calibration?
+
+A) Add explicit escalation criteria to the system prompt with few-shot examples demonstrating when to escalate vs resolve autonomously
+B) Have the agent self-report a confidence score (1-10) and escalate below a threshold
+C) Deploy a separate classifier trained on historical tickets
+D) Implement sentiment analysis to detect frustration and auto-escalate
+
+**Answer: A** — Explicit criteria with few-shot examples directly addresses unclear decision boundaries. Option B fails because LLM self-reported confidence is poorly calibrated. Option C is over-engineered when prompt optimization hasn't been tried. Option D relies on sentiment which doesn't correlate with case complexity. *(Domains: D1, D5)*
+
+---
+
+## Scenario Practice: Code Generation with Claude Code
+
+*You are using Claude Code for software development — code generation, refactoring, debugging, and documentation. You need to integrate it with custom slash commands, CLAUDE.md configurations, and understand when to use plan mode vs direct execution.*
+
+**SP-3:** You want to create a custom \`/review\` slash command that runs your team's standard code review checklist. It should be available to every developer when they clone the repo. Where should you create this command file?
+
+A) In the \`.claude/commands/\` directory in the project repository
+B) In \`~/.claude/commands/\` in each developer's home directory
+C) In the \`CLAUDE.md\` file at the project root
+D) In a \`.claude/config.json\` file with a \`commands\` array
+
+**Answer: A** — Project-scoped custom commands in \`.claude/commands/\` are version-controlled and automatically available to all developers. Option B is for personal commands not shared via git. Option C is for project context, not command definitions. Option D doesn't exist. *(Domain: D3)*
+
+**SP-4:** Your codebase has React components (functional style), API handlers (async/await), and test files spread throughout. You want Claude to automatically apply the correct conventions per file type. What's the most maintainable approach?
+
+A) Create rule files in \`.claude/rules/\` with YAML frontmatter specifying glob patterns to conditionally apply conventions based on file paths
+B) Consolidate all conventions in root CLAUDE.md under section headers
+C) Create skills in \`.claude/skills/\` for each code type
+D) Place a separate CLAUDE.md file in each subdirectory
+
+**Answer: A** — \`.claude/rules/\` files with \`paths: ["**/*.test.tsx"]\` glob patterns automatically apply conventions based on file paths — essential for test files spread throughout. Option B relies on inference rather than explicit matching. Option C requires manual invocation. Option D can't handle files spread across many directories. *(Domain: D3)*
+
+---
+
+## Scenario Practice: Multi-Agent Research System
+
+*You are building a multi-agent research system using the Claude Agent SDK. A coordinator agent delegates to specialized subagents: one searches the web, one analyzes documents, one synthesizes findings. The system must produce comprehensive, cited reports.*
+
+**SP-5:** After running the system on "impact of AI on creative industries," the reports cover only visual arts (digital art, graphic design, photography), completely missing music, writing, and film. The coordinator decomposed the topic into three visual-arts-only subtasks. What is the most likely root cause?
+
+A) The synthesis agent lacks instructions for identifying coverage gaps
+B) The coordinator agent's task decomposition is too narrow, missing relevant domains
+C) The web search agent's queries aren't comprehensive enough
+D) The document analysis agent is filtering out non-visual sources
+
+**Answer: B** — The coordinator's logs show it decomposed "creative industries" into only visual arts subtasks. Subagents executed their assigned tasks correctly — the problem is what they were assigned. Options A, C, and D blame downstream agents working correctly within their scope. *(Domains: D1, D5)*
+
+**SP-6:** The web search subagent times out while researching a complex topic. Which error propagation approach best enables the coordinator to recover intelligently?
+
+A) Return structured error context including failure type, attempted query, partial results, and potential alternative approaches
+B) Implement automatic retry with exponential backoff, returning a generic "search unavailable" status after all retries are exhausted
+C) Catch the timeout and return an empty result set marked as successful
+D) Propagate the timeout exception directly to terminate the entire workflow
+
+**Answer: A** — Structured error context gives the coordinator enough information to decide: retry with modified query, try an alternative approach, or proceed with partial results. Option B hides context behind a generic status. Option C suppresses the error. Option D kills the entire workflow unnecessarily. *(Domains: D1, D5)*
+
+---
+
+## Scenario Practice: Developer Productivity Tools
+
+*You are building developer productivity tools using the Claude Agent SDK. The agent helps engineers explore unfamiliar codebases, understand legacy systems, generate boilerplate code, and automate repetitive tasks. It uses built-in tools (Read, Write, Bash, Grep, Glob) and integrates with MCP servers.*
+
+**SP-7:** The synthesis agent frequently needs to verify specific claims while combining findings. Currently, verification round-trips through the coordinator add 2-3 extra calls per task (40% latency increase). 85% of verifications are simple fact-checks (dates, names). What's the most effective approach?
+
+A) Give the synthesis agent a scoped \`verify_fact\` tool for simple lookups, while complex verifications continue through the coordinator
+B) Have the synthesis agent batch all verification needs and send them at once
+C) Give the synthesis agent access to all web search tools directly
+D) Have the web search agent proactively cache extra context around sources
+
+**Answer: A** — Principle of least privilege: give the synthesis agent only what it needs for the 85% common case (simple fact verification) while preserving coordinator routing for the 15% complex cases. Option B creates blocking dependencies. Option C over-provisions. Option D relies on unpredictable anticipation. *(Domains: D1, D2)*
+
+**SP-8:** You're assigned to restructure a monolithic application into microservices. This involves changes across dozens of files and requires decisions about service boundaries and module dependencies. Which approach should you take?
+
+A) Enter plan mode to explore the codebase, understand dependencies, and design an implementation approach before making changes
+B) Start with direct execution and make changes incrementally
+C) Use direct execution with comprehensive upfront instructions
+D) Begin in direct execution and only switch to plan mode if you encounter unexpected complexity
+
+**Answer: A** — Plan mode is designed for complex tasks involving large-scale changes, multiple valid approaches, and architectural decisions. It enables safe exploration before committing to changes. Option B risks costly rework. Option C assumes you know the right structure. Option D ignores that the complexity is already stated in the requirements. *(Domains: D3, D1)*
+
+---
+
+## Scenario Practice: Claude Code for CI/CD
+
+*You are integrating Claude Code into your CI/CD pipeline. The system runs automated code reviews, generates test cases, and provides feedback on pull requests. You need prompts that produce actionable feedback and minimize false positives.*
+
+**SP-9:** Your pipeline script runs \`claude "Analyze this pull request for security issues"\` but the job hangs indefinitely. Logs indicate Claude Code is waiting for interactive input. What's the correct approach for automated pipelines?
+
+A) Add the \`-p\` flag: \`claude -p "Analyze this pull request for security issues"\`
+B) Set the environment variable \`CLAUDE_HEADLESS=true\`
+C) Redirect stdin from /dev/null
+D) Add the \`--batch\` flag
+
+**Answer: A** — The \`-p\` (or \`--print\`) flag runs Claude Code in non-interactive mode. It processes the prompt, outputs results to stdout, and exits. The other options reference non-existent features or workarounds that don't address Claude Code's command syntax. *(Domain: D3)*
+
+**SP-10:** A pull request modifies 14 files across the stock tracking module. Your single-pass review produces inconsistent results: detailed feedback for some files, superficial comments for others, and contradictory feedback — flagging a pattern as problematic in one file while approving it elsewhere. How should you restructure the review?
+
+A) Split into focused passes: analyze each file individually for local issues, then run a separate integration pass examining cross-file data flow
+B) Require developers to split large PRs into smaller submissions
+C) Switch to a higher-tier model with a larger context window
+D) Run three independent passes and only flag issues found in at least two
+
+**Answer: A** — File-by-file analysis ensures consistent depth. A separate integration pass catches cross-file issues. This directly addresses attention dilution. Option B shifts burden to developers. Option C won't fix attention quality. Option D would suppress real bugs caught only once. *(Domains: D4, D3)*
+
+---
+
+## Scenario Practice: Structured Data Extraction
+
+*You are building a structured data extraction system using Claude. The system extracts information from unstructured documents, validates output using JSON schemas, and maintains high accuracy. It must handle edge cases and integrate with downstream systems.*
+
+**SP-11:** Your extraction system uses \`tool_use\` with JSON schemas for structured output. However, it fabricates values for fields that don't exist in the source document — inventing a "publication date" when the document doesn't contain one. What schema design change prevents this?
+
+A) Make the field optional/nullable so the model can return \`null\` when information is absent
+B) Add a validation step that checks extracted values against the source
+C) Include format normalization rules in the prompt
+D) Use a stricter JSON schema with exact type constraints
+
+**Answer: A** — When a required field can't be found, the model fabricates a value to satisfy the schema. Making it optional (nullable) gives the model permission to return \`null\`, preventing hallucinated values. Option B is a downstream fix, not prevention. Options C and D don't address the root cause. *(Domain: D4)*
+
+**SP-12:** Your team wants to reduce API costs. Real-time Claude calls power two workflows: (1) a blocking pre-merge check that must complete before developers can merge, and (2) a technical debt report generated overnight. Your manager proposes switching both to the Message Batches API for its 50% cost savings. How should you evaluate this?
+
+A) Use batch processing for the technical debt reports only; keep real-time calls for pre-merge checks
+B) Switch both workflows to batch processing with status polling
+C) Keep real-time calls for both to avoid batch result ordering issues
+D) Switch both to batch processing with a timeout fallback to real-time
+
+**Answer: A** — The Message Batches API offers 50% savings but has processing times up to 24 hours with no guaranteed latency SLA. This makes it unsuitable for blocking pre-merge checks but ideal for overnight batch jobs like technical debt reports. Match each API to its appropriate use case. *(Domains: D4, D5)*`,
   'roadmap': `# Claude Certified Architect — Foundations: Study Roadmap
 
 > **Target: Pass the exam (720/1000) in 2-3 weeks of focused study**

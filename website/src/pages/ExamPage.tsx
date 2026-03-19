@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle, Trophy, RotateCcw, Flag, Shield } from 'lucide-react'
 import { useProgress } from '../data/useProgress'
@@ -25,18 +25,6 @@ export default function ExamPage() {
   const [highestReached, setHighestReached] = useState(0)
 
   const isSimulation = mode === 'simulation'
-
-  const question = questions[current]
-
-  // Guard: invalid exam ID
-  if (questions.length === 0) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-slate-400">Exam not found</p>
-        <Link to="/" className="text-primary-light mt-2 inline-block">Back to Dashboard</Link>
-      </div>
-    )
-  }
 
   const totalAnswered = Object.keys(answers).length
   const score = useMemo(() => {
@@ -81,11 +69,25 @@ export default function ExamPage() {
 
   // Use a ref to avoid stale closure in timer callback
   const handleSubmitRef = useRef(handleSubmit)
-  handleSubmitRef.current = handleSubmit
+  useEffect(() => {
+    handleSubmitRef.current = handleSubmit
+  })
 
   const handleTimeUp = useCallback(() => {
     handleSubmitRef.current()
   }, [])
+
+  // Guard: invalid exam ID — after all hooks
+  if (questions.length === 0) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-slate-400">Exam not found</p>
+        <Link to="/" className="text-primary-light mt-2 inline-block">Back to Dashboard</Link>
+      </div>
+    )
+  }
+
+  const question = questions[current]
 
   const restart = () => {
     setPhase('intro')

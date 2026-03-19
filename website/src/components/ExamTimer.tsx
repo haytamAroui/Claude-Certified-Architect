@@ -10,7 +10,10 @@ interface ExamTimerProps {
 export default function ExamTimer({ durationMinutes, isRunning, onTimeUp }: ExamTimerProps) {
   const [secondsLeft, setSecondsLeft] = useState(durationMinutes * 60)
   const onTimeUpRef = useRef(onTimeUp)
-  onTimeUpRef.current = onTimeUp
+
+  useEffect(() => {
+    onTimeUpRef.current = onTimeUp
+  }, [onTimeUp])
 
   useEffect(() => {
     setSecondsLeft(durationMinutes * 60)

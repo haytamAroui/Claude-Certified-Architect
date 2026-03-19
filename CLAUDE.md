@@ -19,10 +19,12 @@ Domain: developer | Stack: React 19 + TypeScript + Vite 8 + Tailwind CSS 4 + Rea
 
 ## Project Structure
 - `website/` — Vite React SPA (main application)
-  - `src/components/` — Shared components (Layout with sidebar nav)
-  - `src/pages/` — Route pages (Dashboard, CourseViewer, ExamPage, Roadmap)
-  - `src/data/` — Data files (courses, courseContents, useProgress hook)
+  - `src/components/` — Layout (sidebar nav), ErrorBoundary, ExamTimer
+  - `src/pages/` — Dashboard, CourseViewer, ExamPage, Roadmap, StudyMaterials, Certificate, NotFound
+  - `src/data/` — courses.ts, courseContents.ts, examData.ts, useProgress.ts
+  - `src/assets/` — Static assets
 - All dev commands run from `website/` directory
+- Dev server: `npm run dev` (port 5173)
 
 ## Session State
 Read `.claude/memory/goals.md` at the start of every session.
