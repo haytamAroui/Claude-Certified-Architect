@@ -152,8 +152,33 @@ html.light .prose a { color: var(--color-accent); }
 html.light .prose blockquote { background: #f1ede4; }
 html.light .prose blockquote p { color: #4a4a6a; }
 html.light .prose code { background: #e5dfd4; color: var(--color-primary); }
-html.light .prose pre { background: #2d2d52 !important; border-color: #e5dfd4; }
-html.light .prose pre code { color: #e2e8f0; }
+html.light .prose pre { background: #faf5f0 !important; border: 1px solid #e5dfd4 !important; }
+html.light .prose pre code { color: #3a3a5c; }
+
+/* Light mode for ModuleCard prose-invert override */
+/* Light mode syntax highlighting */
+html.light .hljs { background: #faf5f0 !important; color: #3a3a5c !important; }
+html.light .hljs-keyword, html.light .hljs-selector-tag { color: #8b5cf6 !important; }
+html.light .hljs-string, html.light .hljs-attr { color: #c4643f !important; }
+html.light .hljs-comment { color: #9ca3af !important; }
+html.light .hljs-function, html.light .hljs-title { color: #2563eb !important; }
+html.light .hljs-number, html.light .hljs-literal { color: #059669 !important; }
+html.light .hljs-built_in, html.light .hljs-type { color: #d97706 !important; }
+html.light .hljs-params { color: #4a4a6a !important; }
+
+html.light .prose-invert { --tw-prose-body: #4a4a6a; --tw-prose-headings: #1a1a2e; --tw-prose-bold: #1a1a2e; --tw-prose-links: var(--color-accent); --tw-prose-code: var(--color-primary); }
+html.light .prose-invert pre { background: #faf5f0 !important; border-color: #e5dfd4 !important; }
+html.light .prose-invert pre code { color: #3a3a5c !important; }
+html.light .prose-invert code { background: #e5dfd4 !important; color: var(--color-primary) !important; }
+html.light [class*="prose-code:text-purple"] code { color: var(--color-primary) !important; }
+html.light [class*="prose-pre:bg-surface"] pre { background: #faf5f0 !important; }
+html.light [class*="prose-th:text-slate"] th { color: #1a1a2e !important; background: #f1ede4 !important; }
+html.light [class*="prose-td:text-slate"] td { color: #4a4a6a !important; }
+html.light [class*="prose-headings:text-slate"] :is(h1,h2,h3,h4) { color: #1a1a2e !important; }
+html.light [class*="prose-p:text-slate"] p { color: #4a4a6a !important; }
+html.light [class*="prose-li:text-slate"] li { color: #4a4a6a !important; }
+html.light [class*="prose-strong:text-slate"] strong { color: #1a1a2e !important; }
+html.light [class*="prose-blockquote:text-slate"] blockquote { color: #4a4a6a !important; }
 html.light .prose thead th { background: #e5dfd4; color: #1a1a2e; }
 html.light .prose tbody td { color: #4a4a6a; border-color: #e5dfd4; }
 html.light .prose tbody tr:hover { background: #f1ede4; }
