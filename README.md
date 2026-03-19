@@ -19,6 +19,16 @@
 
 ---
 
+## Support This Project
+
+If this guide helped you prepare, consider buying me tokens ☕
+
+<a href="https://buymeacoffee.com/haytamaroui" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50" width="210">
+</a>
+
+---
+
 ## About This Repository
 
 This is a **comprehensive, self-contained study guide** for the [Claude Certified Architect — Foundations](https://anthropic.skilljar.com/claude-certified-architect-foundations-access-request) certification exam by Anthropic. It covers all 5 exam domains, all 27 task statements, and includes 120 scenario-based practice questions across 2 full mock exams.
