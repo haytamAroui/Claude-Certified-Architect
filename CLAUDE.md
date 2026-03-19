@@ -32,7 +32,7 @@ Domain: developer | Stack: React 19 + TypeScript + Vite 8 + Tailwind CSS 4 + Rea
 - Dev server: `npm run dev` (port 5173)
 
 ## Deployment
-- Live URL: https://certification-haytam.vercel.app (or similar — check Vercel dashboard)
+- Live URL: https://www.claudecertif.online
 - Config: `vercel.json` at repo root (installCommand, buildCommand, outputDirectory, SPA rewrites)
 - Deploy: push to `main` → Vercel auto-deploys. No `framework` field in vercel.json (causes conflict).
 
