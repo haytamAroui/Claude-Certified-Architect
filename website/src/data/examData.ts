@@ -817,6 +817,91 @@ export const examData: Record<string, ExamQuestion[]> = {
       explanation:
         "`\"unclear\"` enum with `ambiguity_reason` handles genuinely ambiguous cases without forcing the model to guess. Confidence scores (A) are poorly calibrated. Boolean flags (C) lack granularity. Extraction method tracking (D) doesn't improve accuracy.",
     },
+    // Q55-Q60: Additional questions to reach 60
+    {
+      text: "Your coordinator agent dynamically selects which subagents to invoke based on the customer's issue type. For a billing dispute, it always invokes all four subagents (lookup, billing, refund, escalation) even when only the billing subagent is needed. What's the root cause?",
+      domain: "D1",
+      scenario: scenario1Exam1,
+      options: [
+        { letter: "A", text: "The coordinator's system prompt lists all subagents as required for every request." },
+        { letter: "B", text: "The coordinator should dynamically select subagents based on the query requirements, not always invoke the full pipeline. Add routing logic that matches issue types to relevant subagents." },
+        { letter: "C", text: "The subagents should self-select by checking whether they're needed before executing." },
+        { letter: "D", text: "Use a separate routing model to pre-classify which subagents are needed." },
+      ],
+      correct: "B",
+      explanation:
+        "The coordinator should dynamically select subagents based on query requirements, not always use the full pipeline. Some queries don't need all subagents. Self-selection (C) wastes spawning overhead. Routing models (D) add unnecessary complexity.",
+    },
+    {
+      text: "Your agent uses an MCP server for payment processing. The `process_refund` tool's description says: \"Processes a refund.\" The agent frequently calls it for balance inquiries because it doesn't understand the tool's scope. What's the fix?",
+      domain: "D2",
+      scenario: scenario1Exam1,
+      options: [
+        { letter: "A", text: "Add few-shot examples showing when to use each payment tool." },
+        { letter: "B", text: "Enhance the tool description to be specific: \"Processes a monetary refund to the customer's original payment method. Requires: order_id, refund_amount, reason. Do NOT use for balance lookups, payment status checks, or transaction history.\"" },
+        { letter: "C", text: "Remove the tool and handle refunds manually." },
+        { letter: "D", text: "Rename the tool to `issue_monetary_refund` so the name is more specific." },
+      ],
+      correct: "B",
+      explanation:
+        "Tool descriptions are the primary selection mechanism. Minimal descriptions are the root cause. Detailed descriptions with explicit scope, required parameters, and anti-use-cases fix selection. Renaming (D) helps but descriptions matter more. Few-shot (A) adds token overhead.",
+    },
+    {
+      text: "Your MCP server exposes a `get_customer` tool that returns all customer data including payment methods, SSN, and internal notes. The agent sometimes includes sensitive data in customer-facing responses. What's the best architectural fix?",
+      domain: "D2",
+      scenario: scenario1Exam1,
+      options: [
+        { letter: "A", text: "Add \"Never share sensitive data\" to the system prompt." },
+        { letter: "B", text: "Implement a PostToolUse hook that strips sensitive fields (SSN, payment methods, internal notes) from `get_customer` results before they enter the model's context." },
+        { letter: "C", text: "Create a separate `get_customer_safe` tool that only returns non-sensitive fields." },
+        { letter: "D", text: "Both B and C are valid approaches. A PostToolUse hook (B) works as a guardrail on existing tools; a scoped tool (C) prevents sensitive data from ever reaching the model." },
+      ],
+      correct: "D",
+      explanation:
+        "Both approaches are valid. A PostToolUse hook strips sensitive data as a guardrail. A scoped tool prevents sensitive data from reaching the model at all. Prompt instructions (A) are probabilistic and unreliable for security-critical data filtering.",
+    },
+    {
+      text: "Your agent uses project-scoped `.mcp.json` for MCP server configuration. A developer adds their personal API key directly in `.mcp.json` and commits it. What's the correct configuration pattern?",
+      domain: "D2",
+      scenario: scenario1Exam1,
+      options: [
+        { letter: "A", text: "Store API keys in the system prompt where they're only in memory." },
+        { letter: "B", text: "Use environment variable expansion in `.mcp.json` (e.g., `$API_KEY`) so secrets are resolved at runtime from the developer's environment, not committed to version control." },
+        { letter: "C", text: "Move all MCP configuration to `~/.claude.json` (user-level) to avoid committing secrets." },
+        { letter: "D", text: "Encrypt the API key in `.mcp.json` using a shared team encryption key." },
+      ],
+      correct: "B",
+      explanation:
+        "Environment variable expansion in `.mcp.json` keeps secrets out of version control while maintaining project-scoped, team-shared configuration. User-level config (C) prevents team sharing. System prompt storage (A) is not a configuration mechanism. Encryption (D) adds unnecessary complexity.",
+    },
+    {
+      text: "Your extraction system processes 500 invoices nightly. Confidence scores route extractions: high confidence (\u226590%) to auto-approval, low confidence (<90%) to human review. After 3 months, you discover that 12% of auto-approved extractions contain errors. What's the issue?",
+      domain: "D5",
+      scenario: scenario4Exam1,
+      options: [
+        { letter: "A", text: "The 90% threshold is too low \u2014 increase it to 99%." },
+        { letter: "B", text: "Model confidence is not well-calibrated out of the box. Calibrate thresholds using a labeled validation set \u2014 measure actual accuracy at each stated confidence level, then set empirically-grounded thresholds." },
+        { letter: "C", text: "Replace confidence scoring with rule-based validation." },
+        { letter: "D", text: "Remove auto-approval entirely and send all extractions to human review." },
+      ],
+      correct: "B",
+      explanation:
+        "Out-of-the-box model confidence is poorly calibrated \u2014 stated 90% confidence may correspond to only 88% actual accuracy. Calibrate using labeled data. Arbitrary threshold changes (A) don't fix calibration. Rule-based validation (C) and full human review (D) are overreactions.",
+    },
+    {
+      text: "Your agent maintains a long-running support session with a customer. After 20 turns of troubleshooting, the agent starts giving contradictory advice \u2014 recommending steps it previously said to avoid. The customer loses trust. What's the architectural fix?",
+      domain: "D5",
+      scenario: scenario1Exam1,
+      options: [
+        { letter: "A", text: "Limit all support sessions to 10 turns maximum." },
+        { letter: "B", text: "Have the agent maintain a scratchpad file recording key decisions, steps taken, and steps explicitly ruled out. Re-read the scratchpad each turn to maintain consistency across the session." },
+        { letter: "C", text: "Use `/compact` after every 5 turns to keep context small." },
+        { letter: "D", text: "Increase the model's context window to prevent information loss." },
+      ],
+      correct: "B",
+      explanation:
+        "A scratchpad file persists key decisions and ruled-out steps across context boundaries, preventing contradictions. Turn limits (A) frustrate customers. Frequent `/compact` (C) loses important context. Larger context (D) delays but doesn't solve degradation.",
+    },
   ],
   "2": [
     // Scenario 1: Developer Productivity with Claude (Q1-Q15)

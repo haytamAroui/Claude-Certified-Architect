@@ -49,8 +49,8 @@ export default function CourseViewer() {
   if (!course) {
     return (
       <div className="text-center py-20">
-        <p className="text-slate-400">Course not found</p>
-        <Link to="/" className="text-primary-light mt-2 inline-block">Back to Dashboard</Link>
+        <p className="text-muted">Course not found</p>
+        <Link to="/" className="text-primary mt-2 inline-block">Back to Dashboard</Link>
       </div>
     )
   }
@@ -72,20 +72,20 @@ export default function CourseViewer() {
     <div className="animate-fade-in">
       {/* Header */}
       <div className="mb-6">
-        <Link to="/" className="text-slate-400 hover:text-slate-200 text-sm flex items-center gap-1 mb-4">
+        <Link to="/" className="text-muted hover:text-heading text-sm flex items-center gap-1.5 mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to Dashboard
         </Link>
         <div className="flex items-start justify-between flex-wrap gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-medium text-slate-500 bg-surface-lighter px-2 py-0.5 rounded">
+              <span className="text-xs font-medium text-faint bg-surface-lighter px-2.5 py-1 rounded-md">
                 {course.domain}
               </span>
-              <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">
+              <span className="text-xs font-medium text-primary bg-primary/8 px-2.5 py-1 rounded-md">
                 Exam Weight: {course.weight}
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-3">
+            <h1 className="font-display text-xl sm:text-2xl font-semibold text-heading flex items-center gap-3">
               <BookOpen className="w-5 h-5 text-primary shrink-0" />
               Course {course.id}: {course.title}
             </h1>
@@ -94,7 +94,7 @@ export default function CourseViewer() {
 
         {/* Module progress bar */}
         <div className="mt-3">
-          <div className="flex justify-between text-xs text-slate-500 mb-1">
+          <div className="flex justify-between text-xs text-faint mb-1">
             <span>{completedModules.length}/{modules.length} modules</span>
             <span>{progressPct}%</span>
           </div>
@@ -134,7 +134,7 @@ export default function CourseViewer() {
             <button
               onClick={() => setActiveModule((i) => Math.max(0, i - 1))}
               disabled={activeModule === 0}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-slate-400 hover:text-slate-200 hover:bg-surface-lighter transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-muted hover:text-heading hover:bg-surface-lighter transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4" />
               <span className="hidden sm:inline">Previous</span>
@@ -150,8 +150,8 @@ export default function CourseViewer() {
                     i === activeModule
                       ? 'bg-primary w-4 h-2'
                       : completedModules.includes(i)
-                      ? 'bg-green-500/50 w-2 h-2 hover:bg-green-400'
-                      : 'bg-surface-lighter w-2 h-2 hover:bg-slate-500'
+                      ? 'bg-success/50 w-2 h-2 hover:bg-success'
+                      : 'bg-surface-lighter w-2 h-2 hover:bg-surface-lighter'
                   }`}
                   aria-label={`Module ${i + 1}`}
                 />
@@ -161,7 +161,7 @@ export default function CourseViewer() {
             {activeModule < modules.length - 1 ? (
               <button
                 onClick={() => setActiveModule((i) => i + 1)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-primary/10 text-primary-light hover:bg-primary/20 border border-primary/20 transition-all"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-primary/8 text-primary hover:bg-primary/15 border border-primary/20 transition-all"
               >
                 <span className="hidden sm:inline">Next</span>
                 <ChevronRight className="w-4 h-4" />
@@ -169,7 +169,7 @@ export default function CourseViewer() {
             ) : (
               <Link
                 to={nextCourse ? `/course/${nextCourse.id}` : '/exam/1'}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-accent/10 text-purple-300 hover:bg-accent/20 border border-accent/20 transition-all"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-accent/10 text-accent-light hover:bg-accent/20 border border-accent/20 transition-all"
               >
                 <span className="hidden sm:inline">{nextCourse ? `Course ${nextCourse.id}` : 'Mock Exam'}</span>
                 <ChevronRight className="w-4 h-4" />
@@ -180,18 +180,18 @@ export default function CourseViewer() {
           {/* Course navigation */}
           <div className="flex justify-between items-center pt-4 border-t border-surface-lighter">
             {prevCourse ? (
-              <Link to={`/course/${prevCourse.id}`} className="flex items-center gap-2 text-slate-500 hover:text-slate-300 text-xs transition-colors">
+              <Link to={`/course/${prevCourse.id}`} className="flex items-center gap-2 text-muted hover:text-body text-xs transition-colors">
                 <ArrowLeft className="w-3 h-3" />
                 Course {prevCourse.id}
               </Link>
             ) : <div />}
             {nextCourse ? (
-              <Link to={`/course/${nextCourse.id}`} className="flex items-center gap-2 text-slate-500 hover:text-slate-300 text-xs transition-colors">
+              <Link to={`/course/${nextCourse.id}`} className="flex items-center gap-2 text-muted hover:text-body text-xs transition-colors">
                 Course {nextCourse.id}
                 <ChevronRight className="w-3 h-3" />
               </Link>
             ) : (
-              <Link to="/exam/1" className="flex items-center gap-2 text-slate-500 hover:text-slate-300 text-xs transition-colors">
+              <Link to="/exam/1" className="flex items-center gap-2 text-muted hover:text-body text-xs transition-colors">
                 Take Mock Exam
                 <ChevronRight className="w-3 h-3" />
               </Link>
@@ -204,25 +204,25 @@ export default function CourseViewer() {
       <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
         <button
           onClick={() => setDrawerOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-surface-light border border-surface-lighter rounded-full text-sm font-medium text-white shadow-xl"
+          className="flex items-center gap-2 px-4 py-2.5 bg-surface-light border border-surface-lighter rounded-full text-sm font-medium text-heading shadow-xl"
         >
           <List className="w-4 h-4 text-primary" />
           Module {activeModule + 1} of {modules.length}
-          <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+          <ChevronUp className="w-3.5 h-3.5 text-muted" />
         </button>
       </div>
 
       {/* Mobile drawer overlay */}
       {drawerOpen && (
         <div className="lg:hidden fixed inset-0 z-50" onClick={() => setDrawerOpen(false)}>
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-overlay/60" />
           <div
             className="absolute bottom-0 left-0 right-0 bg-surface-light border-t border-surface-lighter rounded-t-2xl max-h-[70vh] overflow-y-auto animate-fade-in"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b border-surface-lighter sticky top-0 bg-surface-light">
-              <p className="text-sm font-semibold text-white">Modules</p>
-              <button onClick={() => setDrawerOpen(false)} className="text-slate-400 hover:text-white">
+              <p className="text-sm font-semibold text-heading">Modules</p>
+              <button onClick={() => setDrawerOpen(false)} className="text-muted hover:text-heading">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -233,16 +233,16 @@ export default function CourseViewer() {
                     onClick={() => { setActiveModule(i); setDrawerOpen(false) }}
                     className={`w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-all ${
                       i === activeModule
-                        ? 'bg-primary/15 text-primary-light font-medium'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-surface-lighter'
+                        ? 'bg-primary/8 text-primary font-medium'
+                        : 'text-muted hover:text-heading hover:bg-surface-lighter'
                     }`}
                   >
                     <span className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold border ${
                       completedModules.includes(i)
-                        ? 'bg-green-500/15 border-green-500/40 text-green-400'
+                        ? 'bg-success/15 border-success/40 text-success'
                         : i === activeModule
-                        ? 'bg-primary/20 border-primary/40 text-primary-light'
-                        : 'border-surface-lighter text-slate-600'
+                        ? 'bg-primary/20 border-primary/40 text-primary'
+                        : 'border-surface-lighter text-subtle'
                     }`}>
                       {completedModules.includes(i) ? '✓' : i + 1}
                     </span>

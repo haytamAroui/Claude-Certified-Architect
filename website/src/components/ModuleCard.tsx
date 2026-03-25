@@ -18,15 +18,15 @@ export default function ModuleCard({ moduleNumber, title, content, isDone, onTog
 
   return (
     <article className="bg-surface-light border border-surface-lighter rounded-2xl overflow-hidden">
-      <div className="px-5 sm:px-6 py-4 border-b border-surface-lighter flex items-center justify-between gap-4 bg-gradient-to-r from-primary/10 to-transparent">
+      <div className="px-6 sm:px-8 py-5 border-b border-surface-lighter flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-primary-light tracking-wider uppercase mb-0.5">
+          <p className="text-[11px] font-semibold text-primary tracking-wider uppercase mb-1">
             Module {moduleNumber}
           </p>
-          <h2 className="text-lg font-bold text-white truncate">{title}</h2>
+          <h2 className="text-lg font-semibold text-heading truncate">{title}</h2>
         </div>
         <div className="flex items-center gap-3 shrink-0">
-          <span className="hidden sm:flex items-center gap-1.5 text-slate-500 text-xs">
+          <span className="hidden sm:flex items-center gap-1.5 text-faint text-xs">
             <Clock className="w-3.5 h-3.5" />
             {readMinutes} min
           </span>
@@ -34,8 +34,8 @@ export default function ModuleCard({ moduleNumber, title, content, isDone, onTog
             onClick={onToggleDone}
             className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-all ${
               isDone
-                ? 'bg-green-500/10 text-green-400 border-green-500/30'
-                : 'text-slate-500 border-surface-lighter hover:border-green-500/20 hover:text-slate-300'
+                ? 'bg-success/10 text-success border-success/30'
+                : 'text-faint border-surface-lighter hover:border-success/20 hover:text-body'
             }`}
           >
             <CheckCircle className="w-3.5 h-3.5" />
@@ -44,18 +44,18 @@ export default function ModuleCard({ moduleNumber, title, content, isDone, onTog
         </div>
       </div>
 
-      <div className="px-5 sm:px-6 py-6 prose prose-invert prose-sm max-w-none
-                      prose-headings:text-slate-100
-                      prose-p:text-slate-300 prose-p:leading-relaxed
-                      prose-code:text-purple-300 prose-code:bg-surface prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs
+      <div className="px-6 sm:px-8 py-8 prose prose-invert prose-sm max-w-none
+                      prose-headings:text-heading
+                      prose-p:text-body prose-p:leading-relaxed
+                      prose-code:text-accent-light prose-code:bg-surface prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs
                       prose-pre:bg-surface prose-pre:border prose-pre:border-surface-lighter prose-pre:rounded-xl
-                      prose-blockquote:border-primary/40 prose-blockquote:text-slate-400
+                      prose-blockquote:border-primary/40 prose-blockquote:text-muted
                       prose-table:text-sm
-                      prose-th:text-slate-200 prose-th:bg-surface/50 prose-th:px-3 prose-th:py-2
-                      prose-td:text-slate-300 prose-td:border-surface-lighter prose-td:px-3 prose-td:py-2
-                      prose-strong:text-slate-100
-                      prose-a:text-primary-light prose-a:no-underline hover:prose-a:underline
-                      prose-li:text-slate-300
+                      prose-th:text-body prose-th:bg-surface/50 prose-th:px-3 prose-th:py-2
+                      prose-td:text-body prose-td:border-surface-lighter prose-td:px-3 prose-td:py-2
+                      prose-strong:text-heading
+                      prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                      prose-li:text-body
                       prose-hr:border-surface-lighter">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
