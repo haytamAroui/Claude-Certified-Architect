@@ -44,11 +44,11 @@ export default function StudyMaterials() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+        <h1 className="font-display text-2xl sm:text-3xl font-semibold text-heading mb-2 flex items-center gap-3">
           <BookOpen className="w-6 h-6 text-primary" />
           Study Materials
         </h1>
-        <p className="text-slate-400">
+        <p className="text-muted">
           Browse all topics across {courses.length} courses and {allTopics.length} modules
         </p>
       </div>
@@ -56,17 +56,17 @@ export default function StudyMaterials() {
       {/* Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-faint" />
           <input
             type="text"
             placeholder="Search topics, courses..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-surface-light border border-surface-lighter rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/25 transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface-light border border-surface-lighter rounded-lg text-heading placeholder-faint text-sm focus:outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 transition-colors"
           />
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1 -mb-1">
-          <Filter className="w-4 h-4 text-slate-500 shrink-0" />
+          <Filter className="w-4 h-4 text-faint shrink-0" />
           <div className="flex gap-1.5">
             {domains.map((d) => (
               <button
@@ -74,8 +74,8 @@ export default function StudyMaterials() {
                 onClick={() => setSelectedDomain(d)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
                   selectedDomain === d
-                    ? 'bg-primary/20 text-primary-light border border-primary/30'
-                    : 'bg-surface-light text-slate-400 border border-surface-lighter hover:border-slate-500'
+                    ? 'bg-primary/10 text-primary border border-primary/20'
+                    : 'bg-surface-light text-muted border border-surface-lighter hover:border-muted'
                 }`}
               >
                 {d}
@@ -86,7 +86,7 @@ export default function StudyMaterials() {
       </div>
 
       {/* Results count */}
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-faint">
         {filtered.length} topic{filtered.length !== 1 ? 's' : ''} found
         {search && ` for "${search}"`}
         {selectedDomain !== 'All' && ` in ${selectedDomain}`}
@@ -95,8 +95,8 @@ export default function StudyMaterials() {
       {/* Grouped Results */}
       {filtered.length === 0 ? (
         <div className="text-center py-16 bg-surface-light border border-surface-lighter rounded-xl">
-          <Search className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-          <p className="text-slate-400">No topics match your search</p>
+          <Search className="w-10 h-10 text-subtle mx-auto mb-3" />
+          <p className="text-muted">No topics match your search</p>
           <button
             onClick={() => { setSearch(''); setSelectedDomain('All') }}
             className="mt-3 text-sm text-primary-light hover:text-primary transition-colors"
@@ -113,15 +113,15 @@ export default function StudyMaterials() {
                 key={courseId}
                 className="bg-surface-light border border-surface-lighter rounded-xl overflow-hidden"
               >
-                <div className="px-4 sm:px-5 py-3 bg-surface-lighter/50 flex items-center justify-between gap-2 flex-wrap">
+                <div className="px-4 sm:px-5 py-3 bg-surface-lighter flex items-center justify-between gap-2 flex-wrap">
                   <div className="flex items-center gap-2 min-w-0 flex-wrap">
-                    <span className="text-xs font-medium text-slate-500 bg-surface px-2 py-0.5 rounded">
+                    <span className="text-xs font-medium text-faint bg-surface px-2 py-0.5 rounded">
                       {course.domain}
                     </span>
                     <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">
                       {course.weight}
                     </span>
-                    <h3 className="text-white font-semibold text-sm ml-1 truncate">
+                    <h3 className="text-heading font-semibold text-sm ml-1 truncate">
                       Course {course.id}: {course.title}
                     </h3>
                   </div>
@@ -139,8 +139,8 @@ export default function StudyMaterials() {
                       to={`/course/${courseId}`}
                       className="flex items-center gap-3 px-5 py-3 hover:bg-surface-lighter/30 transition-colors group"
                     >
-                      <Tag className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                      <span className="text-sm text-slate-300 group-hover:text-white transition-colors">
+                      <Tag className="w-3.5 h-3.5 text-subtle shrink-0" />
+                      <span className="text-sm text-body group-hover:text-heading transition-colors">
                         {topic.topic}
                       </span>
                     </Link>

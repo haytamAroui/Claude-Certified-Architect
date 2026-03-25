@@ -56,7 +56,7 @@ export default function ExamTimer({ durationMinutes, isRunning, onTimeUp }: Exam
           ? 'bg-danger/15 text-danger animate-pulse'
           : isLow
             ? 'bg-warning/15 text-warning'
-            : 'bg-surface-lighter text-slate-300'
+            : 'bg-surface-lighter text-body'
       }`}
       role="timer"
       aria-label={`${minutes} minutes ${seconds} seconds remaining`}

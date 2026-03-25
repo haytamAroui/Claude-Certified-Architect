@@ -81,7 +81,7 @@ export default function ExamPage() {
   if (questions.length === 0) {
     return (
       <div className="text-center py-20">
-        <p className="text-slate-400">Exam not found</p>
+        <p className="text-muted">Exam not found</p>
         <Link to="/" className="text-primary-light mt-2 inline-block">Back to Dashboard</Link>
       </div>
     )
@@ -118,15 +118,15 @@ export default function ExamPage() {
   if (phase === 'intro') {
     return (
       <div className="max-w-2xl mx-auto text-center py-6 sm:py-12">
-        <Link to="/" className="text-slate-400 hover:text-slate-200 text-sm flex items-center gap-1 mb-6 sm:mb-8 justify-center">
+        <Link to="/" className="text-muted hover:text-heading text-sm flex items-center gap-1 mb-6 sm:mb-8 justify-center">
           <ArrowLeft className="w-4 h-4" /> Dashboard
         </Link>
         <div className="bg-surface-light border border-surface-lighter rounded-2xl p-5 sm:p-10">
-          <div className="w-16 h-16 bg-accent/15 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Trophy className="w-8 h-8 text-accent" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Mock Exam {examId}</h1>
-          <p className="text-slate-400 mb-6">
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-heading mb-2">Mock Exam {examId}</h1>
+          <p className="text-muted mb-6">
             {questions.length} questions — Passing: {passThreshold}/{questions.length} (720 points)
           </p>
 
@@ -145,17 +145,17 @@ export default function ExamPage() {
               onClick={() => { setMode('practice'); setTimerEnabled(true) }}
               className={`p-4 rounded-xl border-2 transition-all ${
                 mode === 'practice'
-                  ? 'border-primary bg-primary/10'
-                  : 'border-surface-lighter hover:border-slate-500'
+                  ? 'border-primary bg-primary/8'
+                  : 'border-surface-lighter hover:border-muted'
               }`}
             >
               <div className="flex items-center gap-2 mb-1.5">
-                <Trophy className={`w-4 h-4 ${mode === 'practice' ? 'text-primary' : 'text-slate-500'}`} />
-                <span className={`text-sm font-semibold ${mode === 'practice' ? 'text-white' : 'text-slate-300'}`}>
+                <Trophy className={`w-4 h-4 ${mode === 'practice' ? 'text-primary' : 'text-faint'}`} />
+                <span className={`text-sm font-semibold ${mode === 'practice' ? 'text-heading' : 'text-body'}`}>
                   Practice Mode
                 </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-muted leading-relaxed">
                 Navigate freely, flag questions, optional timer. Review and change answers anytime.
               </p>
             </button>
@@ -163,17 +163,17 @@ export default function ExamPage() {
               onClick={() => { setMode('simulation'); setTimerEnabled(true) }}
               className={`p-4 rounded-xl border-2 transition-all ${
                 mode === 'simulation'
-                  ? 'border-accent bg-accent/10'
-                  : 'border-surface-lighter hover:border-slate-500'
+                  ? 'border-accent bg-accent/8'
+                  : 'border-surface-lighter hover:border-muted'
               }`}
             >
               <div className="flex items-center gap-2 mb-1.5">
-                <Shield className={`w-4 h-4 ${mode === 'simulation' ? 'text-accent' : 'text-slate-500'}`} />
-                <span className={`text-sm font-semibold ${mode === 'simulation' ? 'text-white' : 'text-slate-300'}`}>
+                <Shield className={`w-4 h-4 ${mode === 'simulation' ? 'text-accent' : 'text-faint'}`} />
+                <span className={`text-sm font-semibold ${mode === 'simulation' ? 'text-heading' : 'text-body'}`}>
                   Simulation Mode
                 </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-muted leading-relaxed">
                 Real exam conditions. 120-min timer, forward-only, answers lock on selection.
               </p>
             </button>
@@ -200,7 +200,7 @@ export default function ExamPage() {
                     }`}
                   />
                 </div>
-                <span className="text-sm text-slate-300">
+                <span className="text-sm text-body">
                   {timerEnabled ? '120-minute timer enabled' : 'Timer disabled'}
                 </span>
               </label>
@@ -209,7 +209,7 @@ export default function ExamPage() {
 
           {isSimulation && (
             <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 mb-6 text-left">
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-body leading-relaxed">
                 <strong className="text-accent-light">Simulation rules:</strong> 120-minute countdown, forward-only navigation (no going back), answers lock immediately after selection. Auto-submits when time expires.
               </p>
             </div>
@@ -219,8 +219,8 @@ export default function ExamPage() {
             onClick={() => { setPhase('active'); setHighestReached(0) }}
             className={`px-8 py-3 rounded-xl font-medium transition-colors text-lg ${
               isSimulation
-                ? 'bg-accent hover:bg-accent/80 text-white'
-                : 'bg-primary hover:bg-primary-dark text-white'
+                ? 'bg-accent hover:bg-accent/80 text-ivory'
+                : 'bg-primary hover:bg-primary-dark text-ivory'
             }`}
           >
             {isSimulation ? 'Start Simulation' : 'Start Exam'}
@@ -236,17 +236,17 @@ export default function ExamPage() {
       {/* Top bar */}
       <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2 sm:gap-3">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <button onClick={() => phase === 'active' && !isSimulation ? setPhase('intro') : phase === 'review' ? restart() : undefined} className="text-slate-400 hover:text-slate-200 shrink-0" disabled={phase === 'active' && isSimulation}>
+          <button onClick={() => phase === 'active' && !isSimulation ? setPhase('intro') : phase === 'review' ? restart() : undefined} className="text-muted hover:text-heading shrink-0" disabled={phase === 'active' && isSimulation}>
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h2 className="text-base sm:text-lg font-semibold text-white truncate">
+          <h2 className="text-base sm:text-lg font-semibold text-heading truncate">
             Mock Exam {examId}
             {isSimulation && phase === 'active' && (
-              <span className="ml-2 text-xs font-medium px-2 py-0.5 rounded-lg bg-accent/15 text-accent-light">SIM</span>
+              <span className="ml-2 text-xs font-medium px-2 py-0.5 rounded-lg bg-accent/10 text-accent">SIM</span>
             )}
             {phase === 'review' && (
               <span className={`ml-2 sm:ml-3 text-xs sm:text-sm font-medium px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg ${
-                passed ? 'bg-success/15 text-success' : 'bg-danger/15 text-danger'
+                passed ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'
               }`}>
                 {passed ? 'PASSED' : 'FAILED'} — {score}/{questions.length}
               </span>
@@ -261,14 +261,14 @@ export default function ExamPage() {
               onTimeUp={handleTimeUp}
             />
           )}
-          <span className="text-xs sm:text-sm text-slate-400">
+          <span className="text-xs sm:text-sm text-muted">
             <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1" />
             {totalAnswered}/{questions.length}
           </span>
           {phase === 'active' && (
             <button
               onClick={() => setShowSubmitConfirm(true)}
-              className="bg-primary hover:bg-primary-dark text-white px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors"
+              className="bg-primary hover:bg-primary-dark text-ivory px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors"
             >
               Submit
             </button>
@@ -276,7 +276,7 @@ export default function ExamPage() {
           {phase === 'review' && (
             <button
               onClick={restart}
-              className="flex items-center gap-1.5 bg-surface-lighter hover:bg-accent/20 text-slate-300 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors"
+              className="flex items-center gap-1.5 bg-surface-lighter hover:bg-accent/20 text-body px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Retake
             </button>
@@ -287,18 +287,18 @@ export default function ExamPage() {
       <div className="flex gap-6 flex-col lg:flex-row">
         {/* Question panel */}
         <div className="flex-1">
-          <div className="bg-surface-light border border-surface-lighter rounded-xl p-4 sm:p-6">
+          <div className="bg-surface-light border border-surface-lighter rounded-xl p-5 sm:p-7">
             {/* Question header */}
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-slate-500">
+              <span className="text-sm text-faint">
                 Question {current + 1} of {questions.length}
-                {question.domain && <span className="ml-2 text-xs bg-surface-lighter px-2 py-0.5 rounded">{question.domain}</span>}
+                {question.domain && <span className="ml-2 text-xs bg-surface-lighter px-2.5 py-0.5 rounded-md text-faint">{question.domain}</span>}
               </span>
               {phase === 'active' && !isSimulation && (
                 <button
                   onClick={toggleFlag}
                   className={`p-1.5 rounded transition-colors ${
-                    flagged.has(current) ? 'text-warning bg-warning/10' : 'text-slate-500 hover:text-warning'
+                    flagged.has(current) ? 'text-warning bg-warning/10' : 'text-faint hover:text-warning'
                   }`}
                   title="Flag for review"
                 >
@@ -309,13 +309,13 @@ export default function ExamPage() {
 
             {/* Scenario */}
             {question.scenario && (
-              <div className="bg-surface/60 border border-surface-lighter rounded-lg p-4 mb-4 text-sm text-slate-300">
+              <div className="bg-surface/60 border border-surface-lighter rounded-lg p-4 mb-4 text-sm text-body">
                 {question.scenario}
               </div>
             )}
 
             {/* Question text */}
-            <p className="text-white font-medium mb-6 leading-relaxed">{question.text}</p>
+            <p className="text-heading font-medium mb-6 leading-relaxed">{question.text}</p>
 
             {/* Options */}
             <div className="space-y-3">
@@ -324,17 +324,17 @@ export default function ExamPage() {
                 const isCorrect = opt.letter === question.correct
                 const showResult = phase === 'review'
 
-                let borderColor = 'border-surface-lighter hover:border-slate-500'
+                let borderColor = 'border-surface-lighter hover:border-muted'
                 let bg = 'bg-surface'
                 if (showResult && isCorrect) {
-                  borderColor = 'border-success/50'
-                  bg = 'bg-success/10'
+                  borderColor = 'border-success/40'
+                  bg = 'bg-success/8'
                 } else if (showResult && isSelected && !isCorrect) {
-                  borderColor = 'border-danger/50'
-                  bg = 'bg-danger/10'
+                  borderColor = 'border-danger/40'
+                  bg = 'bg-danger/8'
                 } else if (isSelected) {
-                  borderColor = 'border-primary/50'
-                  bg = 'bg-primary/10'
+                  borderColor = 'border-primary/40'
+                  bg = 'bg-primary/8'
                 }
 
                 return (
@@ -347,7 +347,7 @@ export default function ExamPage() {
                     <span className={`w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-sm font-medium border ${
                       isSelected
                         ? 'bg-primary/20 border-primary text-primary-light'
-                        : 'border-surface-lighter text-slate-500'
+                        : 'border-surface-lighter text-faint'
                     }`}>
                       {showResult && isCorrect ? (
                         <CheckCircle className="w-5 h-5 text-success" />
@@ -358,7 +358,7 @@ export default function ExamPage() {
                       )}
                     </span>
                     <span className={`text-sm leading-relaxed ${
-                      showResult && isCorrect ? 'text-success' : showResult && isSelected && !isCorrect ? 'text-danger/80' : 'text-slate-300'
+                      showResult && isCorrect ? 'text-success' : showResult && isSelected && !isCorrect ? 'text-danger/80' : 'text-body'
                     }`}>
                       {opt.text}
                     </span>
@@ -377,7 +377,7 @@ export default function ExamPage() {
                   {showExplanation ? 'Hide' : 'Show'} Explanation
                 </button>
                 {showExplanation && (
-                  <div className="mt-3 bg-accent/5 border border-accent/20 rounded-lg p-4 text-sm text-slate-300 leading-relaxed">
+                  <div className="mt-3 bg-accent/5 border border-accent/20 rounded-lg p-4 text-sm text-body leading-relaxed">
                     {question.explanation}
                   </div>
                 )}
@@ -390,7 +390,7 @@ export default function ExamPage() {
                 <button
                   onClick={goToPrev}
                   disabled={current === 0}
-                  className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-1.5 text-sm text-muted hover:text-heading disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" /> Previous
                 </button>
@@ -408,7 +408,7 @@ export default function ExamPage() {
                 <button
                   onClick={goToNext}
                   disabled={current === questions.length - 1}
-                  className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-1.5 text-sm text-muted hover:text-heading disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
                   Next <ArrowRight className="w-4 h-4" />
                 </button>
@@ -417,7 +417,7 @@ export default function ExamPage() {
 
             {/* Simulation lock indicator */}
             {isSimulation && phase === 'active' && answers[current] !== undefined && (
-              <p className="text-xs text-slate-500 mt-2 text-center">Answer locked — click Next to continue</p>
+              <p className="text-xs text-faint mt-2 text-center">Answer locked — click Next to continue</p>
             )}
           </div>
         </div>
@@ -425,7 +425,7 @@ export default function ExamPage() {
         {/* Question grid sidebar */}
         <div className="lg:w-56 shrink-0 order-first lg:order-last">
           <div className="bg-surface-light border border-surface-lighter rounded-xl p-3 sm:p-4 sticky top-6">
-            <h3 className="text-sm font-medium text-slate-400 mb-3">Questions</h3>
+            <h3 className="text-sm font-medium text-muted mb-3">Questions</h3>
             <div className="grid grid-cols-10 sm:grid-cols-6 gap-1 sm:gap-1.5">
               {questions.map((q, i) => {
                 const isAnswered = answers[i] !== undefined
@@ -437,9 +437,9 @@ export default function ExamPage() {
                 const isLocked = isSimulation && phase === 'active' && i > highestReached
 
                 let bg = 'bg-surface'
-                if (isCurrent) bg = 'bg-primary/30 ring-1 ring-primary'
-                else if (isCorrectInReview) bg = 'bg-success/20'
-                else if (isWrongInReview) bg = 'bg-danger/20'
+                if (isCurrent) bg = 'bg-primary/20 ring-1 ring-primary'
+                else if (isCorrectInReview) bg = 'bg-success/15'
+                else if (isWrongInReview) bg = 'bg-danger/15'
                 else if (isLocked) bg = 'bg-surface/50'
                 else if (isAnswered) bg = 'bg-surface-lighter'
 
@@ -455,7 +455,7 @@ export default function ExamPage() {
                     disabled={isLocked || (isSimulation && phase === 'active' && i < current)}
                     className={`w-full aspect-square rounded text-xs font-medium transition-all ${bg} ${
                       isFlagged ? 'ring-1 ring-warning' : ''
-                    } ${isLocked ? 'opacity-30 cursor-not-allowed' : 'hover:ring-1 hover:ring-slate-500'} text-slate-400`}
+                    } ${isLocked ? 'opacity-30 cursor-not-allowed' : 'hover:ring-1 hover:ring-surface-lighter'} text-muted`}
                   >
                     {i + 1}
                   </button>
@@ -466,16 +466,16 @@ export default function ExamPage() {
             {phase === 'review' && (
               <div className="mt-4 pt-4 border-t border-surface-lighter space-y-2 text-xs">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded bg-success/20" />
-                  <span className="text-slate-400">Correct: {score}</span>
+                  <div className="w-3 h-3 rounded bg-success/15" />
+                  <span className="text-muted">Correct: {score}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded bg-danger/20" />
-                  <span className="text-slate-400">Wrong: {totalAnswered - score}</span>
+                  <div className="w-3 h-3 rounded bg-danger/15" />
+                  <span className="text-muted">Wrong: {totalAnswered - score}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded bg-surface" />
-                  <span className="text-slate-400">Unanswered: {questions.length - totalAnswered}</span>
+                  <span className="text-muted">Unanswered: {questions.length - totalAnswered}</span>
                 </div>
               </div>
             )}
@@ -485,10 +485,10 @@ export default function ExamPage() {
 
       {/* Submit confirmation modal */}
       {showSubmitConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" role="dialog" aria-modal="true" aria-label="Submit exam confirmation" onKeyDown={(e) => { if (e.key === 'Escape') setShowSubmitConfirm(false) }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay/60" role="dialog" aria-modal="true" aria-label="Submit exam confirmation" onKeyDown={(e) => { if (e.key === 'Escape') setShowSubmitConfirm(false) }}>
           <div className="bg-surface-light border border-surface-lighter rounded-2xl p-8 max-w-sm w-full mx-4 animate-scale-in">
-            <h3 className="text-lg font-semibold text-white mb-2">Submit Exam?</h3>
-            <p className="text-sm text-slate-400 mb-1">
+            <h3 className="text-lg font-semibold text-heading mb-2">Submit Exam?</h3>
+            <p className="text-sm text-muted mb-1">
               You have answered {totalAnswered} of {questions.length} questions.
             </p>
             {questions.length - totalAnswered > 0 && (
@@ -499,13 +499,13 @@ export default function ExamPage() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowSubmitConfirm(false)}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-surface-lighter text-slate-300 text-sm font-medium hover:bg-surface-lighter/80 transition-colors"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-surface-lighter text-body text-sm font-medium hover:bg-surface-lighter/80 transition-colors"
               >
                 Keep Working
               </button>
               <button
                 onClick={() => { setShowSubmitConfirm(false); handleSubmit() }}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-dark transition-colors"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-primary text-ivory text-sm font-medium hover:bg-primary-dark transition-colors"
               >
                 Submit
               </button>
