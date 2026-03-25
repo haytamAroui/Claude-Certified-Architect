@@ -15,13 +15,15 @@ function useTheme() {
 const exams = [
   { id: '1', title: 'Mock Exam 1' },
   { id: '2', title: 'Mock Exam 2' },
+  { id: '3', title: 'Mock Exam 3' },
+  { id: '4', title: 'Mock Exam 4' },
 ]
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
     isActive
-      ? 'bg-primary/15 text-primary-light font-medium'
-      : 'text-slate-400 hover:text-slate-200 hover:bg-surface-lighter'
+      ? 'bg-primary/8 text-primary font-medium'
+      : 'text-muted hover:text-heading hover:bg-surface-lighter'
   }`
 
 function useStarPopup() {
@@ -48,7 +50,7 @@ export default function Layout() {
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-overlay/50 z-40 lg:hidden"
           role="dialog"
           aria-label="Navigation menu"
           aria-modal="true"
@@ -64,29 +66,20 @@ export default function Layout() {
         }`}
       >
         {/* Logo */}
-        <div className="p-5 border-b border-surface-lighter">
-          <div className="flex items-center justify-between">
-            <NavLink to="/" className="flex items-center gap-3" onClick={() => setSidebarOpen(false)}>
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-base font-bold text-white leading-tight">Claude Certified</h1>
-                <p className="text-xs text-slate-400">Architect Study Guide</p>
-              </div>
-            </NavLink>
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-surface-lighter transition-colors"
-              aria-label={light ? 'Switch to dark mode' : 'Switch to light mode'}
-            >
-              {light ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-            </button>
-          </div>
+        <div className="p-6 border-b border-surface-lighter">
+          <NavLink to="/" className="flex items-center gap-3" onClick={() => setSidebarOpen(false)}>
+            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+              <BookOpen className="w-[18px] h-[18px] text-primary" />
+            </div>
+            <div>
+              <h1 className="text-sm font-semibold text-heading leading-tight">Claude Certified</h1>
+              <p className="text-xs text-faint">Architect Study Guide</p>
+            </div>
+          </NavLink>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+        <nav className="flex-1 overflow-y-auto p-4 space-y-8">
           <div>
             <NavLink to="/" className={linkClass} onClick={() => setSidebarOpen(false)}>
               <Home className="w-4 h-4" />
@@ -95,7 +88,7 @@ export default function Layout() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3">
+            <p className="text-[11px] font-semibold text-faint uppercase tracking-wider mb-2 px-3">
               Courses
             </p>
             <div className="space-y-1">
@@ -108,14 +101,14 @@ export default function Layout() {
                 >
                   <BookOpen className="w-4 h-4 shrink-0" />
                   <span className="flex-1 truncate">{c.title}</span>
-                  <span className="text-xs text-slate-500">{c.weight}</span>
+                  <span className="text-xs text-faint">{c.weight}</span>
                 </NavLink>
               ))}
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3">
+            <p className="text-[11px] font-semibold text-faint uppercase tracking-wider mb-2 px-3">
               Mock Exams
             </p>
             <div className="space-y-1">
@@ -128,14 +121,14 @@ export default function Layout() {
                 >
                   <FileQuestion className="w-4 h-4 shrink-0" />
                   <span className="flex-1">{e.title}</span>
-                  <span className="text-xs text-slate-500">60 Q</span>
+                  <span className="text-xs text-faint">60 Q</span>
                 </NavLink>
               ))}
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3">
+            <p className="text-[11px] font-semibold text-faint uppercase tracking-wider mb-2 px-3">
               Resources
             </p>
             <div className="space-y-1">
@@ -156,32 +149,47 @@ export default function Layout() {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-surface-lighter space-y-3">
+        <div className="p-4 border-t border-surface-lighter space-y-2">
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-faint hover:text-heading hover:bg-surface-lighter transition-colors w-full"
+            aria-label={light ? 'Switch to dark mode' : 'Switch to light mode'}
+          >
+            {light ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            <span className="text-xs">{light ? 'Dark mode' : 'Light mode'}</span>
+          </button>
+
+          {/* Register link */}
           <a
             href="https://anthropic.skilljar.com/claude-certified-architect-foundations-access-request"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 py-2.5 bg-primary/10 hover:bg-primary/20 rounded-lg text-primary-light text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-3 py-2.5 bg-primary/8 hover:bg-primary/15 rounded-lg text-primary text-sm font-medium transition-colors"
           >
             <ExternalLink className="w-4 h-4" />
             Register for Exam
           </a>
+
+          {/* Buy me tokens */}
           <a
             href="https://buymeacoffee.com/haytamaroui"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 rounded-lg text-yellow-400 text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-muted hover:text-heading rounded-lg hover:bg-surface-lighter text-sm transition-colors"
           >
             <span className="text-base leading-none">🪙</span>
             Buy me tokens
           </a>
-          <div className="flex items-center justify-between px-3">
-            <span className="text-xs text-slate-500">Created by <span className="text-slate-400">Haytam Aroui</span></span>
+
+          {/* Creator credit */}
+          <div className="flex items-center justify-between px-3 pt-2">
+            <span className="text-xs text-faint">Created by <span className="text-muted">Haytam Aroui</span></span>
             <a
               href="https://github.com/haytamAroui/Claude-Certified-Architect"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-500 hover:text-slate-300 transition-colors"
+              className="text-faint hover:text-muted transition-colors"
               aria-label="GitHub repository"
             >
               <Github className="w-4 h-4" />
@@ -193,16 +201,16 @@ export default function Layout() {
       {/* Star popup */}
       {starVisible && (
         <div className="fixed bottom-5 right-5 z-50 flex items-start gap-3 bg-surface-light border border-surface-lighter rounded-xl shadow-2xl p-4 max-w-xs animate-in slide-in-from-bottom-4 fade-in duration-300">
-          <Star className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" fill="currentColor" />
+          <Star className="w-5 h-5 text-warning shrink-0 mt-0.5" fill="currentColor" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white leading-snug">Found this useful?</p>
-            <p className="text-xs text-slate-400 mt-0.5">Give the repo a star on GitHub — it helps others find it!</p>
+            <p className="text-sm font-medium text-heading leading-snug">Found this useful?</p>
+            <p className="text-xs text-muted mt-0.5">Give the repo a star on GitHub — it helps others find it!</p>
             <a
               href="https://github.com/haytamAroui/Claude-Certified-Architect"
               target="_blank"
               rel="noopener noreferrer"
               onClick={dismissStar}
-              className="inline-flex items-center gap-1.5 mt-2 text-xs font-medium text-yellow-400 hover:text-yellow-300 transition-colors"
+              className="inline-flex items-center gap-1.5 mt-2 text-xs font-medium text-warning hover:text-warning transition-colors"
             >
               <Github className="w-3.5 h-3.5" />
               Star on GitHub
@@ -210,7 +218,7 @@ export default function Layout() {
           </div>
           <button
             onClick={dismissStar}
-            className="text-slate-500 hover:text-slate-300 transition-colors shrink-0"
+            className="text-faint hover:text-muted transition-colors shrink-0"
             aria-label="Dismiss"
           >
             <X className="w-4 h-4" />
@@ -221,18 +229,18 @@ export default function Layout() {
       {/* Main content */}
       <main className="flex-1 overflow-y-auto">
         {/* Mobile header */}
-        <div className="lg:hidden sticky top-0 z-30 bg-surface-light/80 backdrop-blur-md border-b border-surface-lighter px-4 py-3 flex items-center gap-3">
+        <div className="lg:hidden sticky top-0 z-30 bg-surface-light/90 backdrop-blur-md border-b border-surface-lighter px-4 py-3 flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-surface-lighter text-slate-400"
+            className="p-2 rounded-lg hover:bg-surface-lighter text-muted"
             aria-label="Open navigation menu"
           >
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <span className="text-sm font-medium text-white">Claude Certified Architect</span>
+          <span className="text-sm font-medium text-heading">Claude Certified Architect</span>
         </div>
 
-        <div className="p-4 sm:p-6 lg:p-10 max-w-5xl mx-auto">
+        <div className="p-6 sm:p-8 lg:p-12 max-w-5xl mx-auto">
           <Outlet />
         </div>
       </main>
