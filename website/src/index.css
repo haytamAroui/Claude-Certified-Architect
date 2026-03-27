@@ -104,13 +104,17 @@ html.light .hljs-params { color: var(--color-body) !important; }
 .prose a { color: var(--color-accent-light); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
 .prose a:hover { border-bottom-color: var(--color-accent-light); }
 .prose blockquote {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
   border-left: 3px solid var(--color-primary);
-  padding: 0.75rem 1.25rem;
-  margin: 1.25rem 0;
-  background: var(--color-surface-lighter);
-  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-lighter));
+  border-radius: 0 0.75rem 0.75rem 0;
 }
-.prose blockquote p { color: var(--color-body); margin: 0; }
+.prose blockquote p { color: var(--color-body); margin: 0 0 0.25rem; }
+.prose blockquote p:last-child { margin-bottom: 0; }
 .prose code {
   background: var(--color-surface-lighter);
   padding: 0.2rem 0.5rem;
@@ -171,6 +175,16 @@ html.light .hljs-params { color: var(--color-body) !important; }
   to { opacity: 1; transform: translateX(0); }
 }
 
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
@@ -181,9 +195,91 @@ html.light .hljs-params { color: var(--color-body) !important; }
   100% { background-position: 200% 0; }
 }
 
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+/* ── Landing page — Anthropic Academy style ── */
+.landing-page {
+  background-color: #faf9f5;
+  color: #5e5d59;
+}
+html.light .landing-page { background-color: #faf9f5; }
+
+/* Dark mode: use app's dark surface */
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .landing-page { background-color: var(--color-surface); color: var(--color-body); }
+}
+html:not(.light) .landing-page { background-color: var(--color-surface); color: var(--color-body); }
+
+.landing-page .landing-nav { background: rgba(250, 249, 245, 0.92); backdrop-filter: blur(12px); }
+html:not(.light) .landing-page .landing-nav { background: rgba(25, 25, 24, 0.92); }
+
+/* Terminal background */
+.landing-page .terminal-bg { background: #141413; }
+html.light .landing-page .terminal-bg { background: #141413; }
+.landing-page .terminal-bg * { color: #d1cfc5; }
+.landing-page .terminal-bg .text-success { color: #5a9a6e; }
+.landing-page .terminal-bg .text-accent-light { color: #93b8d9; }
+.landing-page .terminal-bg .text-primary { color: #d97757; }
+.landing-page .terminal-bg .text-body { color: #d1cfc5; }
+.landing-page .terminal-bg .text-faint { color: #87867f; }
+
+/* Course cards — warm category colors (light mode) */
+html.light .course-card { border: 1px solid #e5e2d9; }
+html.light .dark-card-warm { background: #f5ebe4; }
+html.light .dark-card-sage { background: #e6efe8; }
+html.light .dark-card-sky { background: #e4ecf3; }
+html.light .dark-card-heather { background: #ece6f3; }
+html.light .dark-card-oat { background: #f3ece4; }
+
+/* Course cards — dark mode fallback */
+html:not(.light) .course-card { background: var(--color-surface-light); border: 1px solid var(--color-surface-lighter); }
+html:not(.light) .dark-card-warm,
+html:not(.light) .dark-card-sage,
+html:not(.light) .dark-card-sky,
+html:not(.light) .dark-card-heather,
+html:not(.light) .dark-card-oat { background: var(--color-surface-light); }
+
+/* Dashboard cards — warm category colors (light mode) */
+html.light .dash-card-warm { background: #f5ebe4; }
+html.light .dash-card-sage { background: #e6efe8; }
+html.light .dash-card-sky { background: #e4ecf3; }
+html.light .dash-card-heather { background: #ece6f3; }
+html.light .dash-card-oat { background: #f3ece4; }
+
+/* Dashboard cards — dark mode */
+html:not(.light) .dash-card-warm,
+html:not(.light) .dash-card-sage,
+html:not(.light) .dash-card-sky,
+html:not(.light) .dash-card-heather,
+html:not(.light) .dash-card-oat { background: var(--color-surface-light); }
+
+/* Landing page — light mode text overrides */
+html.light .landing-page { --color-heading: #141413; --color-body: #5e5d59; --color-muted: #87867f; --color-faint: #b0aea5; }
+
+/* Footer */
+.landing-page .landing-footer { background: #141413; color: #b0aea5; }
+.landing-page .landing-footer .text-heading { color: #faf9f5; }
+.landing-page .landing-footer .text-muted { color: #b0aea5; }
+.landing-page .landing-footer .text-faint { color: #87867f; }
+.landing-page .landing-footer a:hover { color: #faf9f5; }
+html:not(.light) .landing-page .landing-footer { background: #0f0f0e; }
+
+/* Landing animation */
+@keyframes landingFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.landing-fade-in { animation: landingFadeIn 0.6s ease-out both; }
+
 .animate-fade-in { animation: fadeIn 0.4s ease-out both; }
 .animate-slide-in { animation: slideInLeft 0.3s ease-out both; }
 .animate-scale-in { animation: scaleIn 0.3s ease-out both; }
+.nav-dropdown { animation: dropdownIn 0.15s ease-out both; }
+.mobile-drawer { animation: slideInRight 0.25s ease-out both; }
+.badge-pulse { animation: badgePulse 0.5s ease-in-out; }
 
 .stagger-children > * { animation: fadeIn 0.4s ease-out both; }
 .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
@@ -195,10 +291,49 @@ html.light .hljs-params { color: var(--color-body) !important; }
 .stagger-children > *:nth-child(7) { animation-delay: 300ms; }
 .stagger-children > *:nth-child(8) { animation-delay: 350ms; }
 
+/* ── Featured card ── */
+.featured-card {
+  position: relative;
+  border: 1px solid var(--color-surface-lighter);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.featured-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent), var(--color-primary));
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  opacity: 0.5;
+  z-index: 1;
+  pointer-events: none;
+}
+.featured-card:hover::before { opacity: 1; }
+.featured-card:hover { box-shadow: 0 4px 24px rgba(217, 119, 87, 0.15); }
+html.light .featured-card:hover { box-shadow: 0 4px 24px rgba(196, 100, 63, 0.12); }
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 /* ── Card hover ── */
 .card-hover { transition: box-shadow 0.2s ease, border-color 0.2s ease; }
 .card-hover:hover { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); }
 html.light .card-hover:hover { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); }
+
+/* ── Flashcard flip ── */
+.perspective { perspective: 1000px; }
+.card-flip { transition: transform 0.5s ease; transform-style: preserve-3d; }
+.card-flip.flipped { transform: rotateY(180deg); }
+.card-face { backface-visibility: hidden; }
+.card-face-back { transform: rotateY(180deg); }
 
 /* ── Gradient text ── */
 .gradient-text {
@@ -220,7 +355,7 @@ html.light .card-hover:hover { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); }
 /* ── Print ── */
 @media print {
   body { background: white !important; color: black !important; }
-  aside, nav, .no-print { display: none !important; }
+  header, footer, aside, nav, .no-print { display: none !important; }
   #certificate {
     border: 2px solid #333 !important;
     background: white !important;

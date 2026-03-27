@@ -19,8 +19,8 @@ function splitModules(courseId: string, content: string): { title: string; conte
     })
   }
 
-  // Courses 1-5: split on "## Module N.N —" and "## Practice Questions"
-  const pattern = /(?=^## (?:Module \d+\.\d+[a-b]? —|Practice Questions —))/m
+  // Courses 1-5 & 7: split on "## Module N.N —", "## Practice Questions", "## Cross-Reference"
+  const pattern = /(?=^## (?:Module \d+\.\d+[a-b]? —|Practice Questions —|Cross-Reference:))/m
   const chunks = content.split(pattern).filter(Boolean)
 
   return chunks.map((chunk) => {
@@ -50,7 +50,7 @@ export default function CourseViewer() {
     return (
       <div className="text-center py-20">
         <p className="text-muted">Course not found</p>
-        <Link to="/" className="text-primary mt-2 inline-block">Back to Dashboard</Link>
+        <Link to="/dashboard" className="text-primary mt-2 inline-block">Back to Dashboard</Link>
       </div>
     )
   }
@@ -72,7 +72,7 @@ export default function CourseViewer() {
     <div className="animate-fade-in">
       {/* Header */}
       <div className="mb-6">
-        <Link to="/" className="text-muted hover:text-heading text-sm flex items-center gap-1.5 mb-6">
+        <Link to="/dashboard" className="text-muted hover:text-heading text-sm flex items-center gap-1.5 mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to Dashboard
         </Link>
         <div className="flex items-start justify-between flex-wrap gap-4">
@@ -81,14 +81,23 @@ export default function CourseViewer() {
               <span className="text-xs font-medium text-faint bg-surface-lighter px-2.5 py-1 rounded-md">
                 {course.domain}
               </span>
-              <span className="text-xs font-medium text-primary bg-primary/8 px-2.5 py-1 rounded-md">
-                Exam Weight: {course.weight}
-              </span>
+              {course.id === '7' ? (
+                <span className="text-xs font-medium text-accent bg-accent/8 px-2.5 py-1 rounded-md">
+                  Hands-On Guide
+                </span>
+              ) : (
+                <span className="text-xs font-medium text-primary bg-primary/8 px-2.5 py-1 rounded-md">
+                  Exam Weight: {course.weight}
+                </span>
+              )}
             </div>
-            <h1 className="font-display text-xl sm:text-2xl font-semibold text-heading flex items-center gap-3">
-              <BookOpen className="w-5 h-5 text-primary shrink-0" />
-              Course {course.id}: {course.title}
+            <h1 className="font-display text-xl sm:text-2xl font-medium text-heading flex items-center gap-3">
+              <BookOpen className="w-5 h-5 text-faint shrink-0" />
+              {course.id === '7' ? course.title : `Course ${course.id}: ${course.title}`}
             </h1>
+            {course.id === '7' && (
+              <p className="text-muted text-sm mt-1">Practical guide — not scored on the certification exam</p>
+            )}
           </div>
         </div>
 
@@ -100,7 +109,7 @@ export default function CourseViewer() {
           </div>
           <div className="h-1.5 bg-surface rounded-full overflow-hidden" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100}>
             <div
-              className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500"
+              className="h-full bg-primary rounded-full transition-all duration-500"
               style={{ width: `${progressPct}%` }}
             />
           </div>

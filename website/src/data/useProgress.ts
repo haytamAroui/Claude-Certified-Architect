@@ -5,12 +5,24 @@ export interface DomainScore {
   total: number
 }
 
+export interface QuizResult {
+  score: number
+  total: number
+  domain: string
+  date: string
+}
+
 interface Progress {
   completedCourses: string[]
   completedModules: Record<string, number[]>
   examScores: Record<string, { score: number; total: number; date: string; domainBreakdown?: Record<string, DomainScore> }>
   studyStreak: number
   lastStudyDate: string | null
+  flashcardStats: Record<string, { reviewed: number; mastered: number }>
+  quizScores: QuizResult[]
+  conceptsViewed: string[]
+  badges: string[]
+  xpPoints: number
 }
 
 const STORAGE_KEY = 'claude-cert-progress'
@@ -26,10 +38,15 @@ function loadProgress(): Progress {
         examScores: parsed.examScores || {},
         studyStreak: parsed.studyStreak || 0,
         lastStudyDate: parsed.lastStudyDate || null,
+        flashcardStats: parsed.flashcardStats || {},
+        quizScores: parsed.quizScores || [],
+        conceptsViewed: parsed.conceptsViewed || [],
+        badges: parsed.badges || [],
+        xpPoints: parsed.xpPoints || 0,
       }
     }
   } catch { /* corrupt localStorage — reset to defaults */ }
-  return { completedCourses: [], completedModules: {}, examScores: {}, studyStreak: 0, lastStudyDate: null }
+  return { completedCourses: [], completedModules: {}, examScores: {}, studyStreak: 0, lastStudyDate: null, flashcardStats: {}, quizScores: [], conceptsViewed: [], badges: [], xpPoints: 0 }
 }
 
 function saveProgress(progress: Progress) {
@@ -103,6 +120,38 @@ export function useProgress() {
     }))
   }
 
+  const saveFlashcardResult = (domain: string, mastered: boolean) => {
+    setProgress((p) => {
+      const prev = p.flashcardStats[domain] || { reviewed: 0, mastered: 0 }
+      return {
+        ...p,
+        flashcardStats: {
+          ...p.flashcardStats,
+          [domain]: {
+            reviewed: prev.reviewed + 1,
+            mastered: mastered ? prev.mastered + 1 : prev.mastered,
+          },
+        },
+      }
+    })
+  }
+
+  const saveQuizScore = (score: number, total: number, domain: string) => {
+    setProgress((p) => ({
+      ...p,
+      quizScores: [...p.quizScores, { score, total, domain, date: new Date().toISOString() }],
+    }))
+  }
+
+  const markConceptViewed = (conceptId: string) => {
+    setProgress((p) => ({
+      ...p,
+      conceptsViewed: p.conceptsViewed.includes(conceptId)
+        ? p.conceptsViewed
+        : [...p.conceptsViewed, conceptId],
+    }))
+  }
+
   // Aggregate domain performance across all exams
   const getDomainStats = (): Record<string, DomainScore> => {
     const stats: Record<string, DomainScore> = {}
@@ -117,5 +166,24 @@ export function useProgress() {
     return stats
   }
 
-  return { progress, toggleCourse, toggleModule, saveExamScore, getDomainStats }
+  const getWeakDomains = (): string[] => {
+    const stats = getDomainStats()
+    return Object.entries(stats)
+      .map(([domain, s]) => ({ domain, pct: s.total > 0 ? s.correct / s.total : 1 }))
+      .sort((a, b) => a.pct - b.pct)
+      .map((d) => d.domain)
+  }
+
+  const awardBadge = (badgeId: string) => {
+    setProgress((p) => {
+      if (p.badges.includes(badgeId)) return p
+      return { ...p, badges: [...p.badges, badgeId] }
+    })
+  }
+
+  const addXP = (points: number) => {
+    setProgress((p) => ({ ...p, xpPoints: p.xpPoints + points }))
+  }
+
+  return { progress, toggleCourse, toggleModule, saveExamScore, getDomainStats, saveFlashcardResult, saveQuizScore, markConceptViewed, getWeakDomains, awardBadge, addXP }
 }

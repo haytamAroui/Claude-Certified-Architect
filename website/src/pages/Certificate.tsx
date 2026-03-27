@@ -28,14 +28,14 @@ export default function Certificate() {
   if (!hasPassed) {
     return (
       <div className="max-w-2xl mx-auto text-center py-16">
-        <Link to="/" className="text-muted hover:text-heading text-sm flex items-center gap-1 mb-8 justify-center">
+        <Link to="/dashboard" className="text-muted hover:text-heading text-sm flex items-center gap-1 mb-8 justify-center">
           <ArrowLeft className="w-4 h-4" /> Dashboard
         </Link>
         <div className="bg-surface-light border border-surface-lighter rounded-2xl p-10">
           <div className="w-16 h-16 bg-surface-lighter rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Lock className="w-8 h-8 text-faint" />
           </div>
-          <h1 className="font-display text-2xl font-semibold text-heading mb-3">Certificate Locked</h1>
+          <h1 className="font-display text-2xl font-medium text-heading mb-3">Certificate Locked</h1>
           <p className="text-muted mb-6">
             Complete all {totalCourses} courses and pass a mock exam (43/60+) to unlock your certificate of completion.
           </p>
@@ -58,8 +58,8 @@ export default function Certificate() {
             </div>
           </div>
           <Link
-            to="/"
-            className="inline-flex items-center gap-2 mt-6 bg-primary hover:bg-primary-dark text-ivory px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
+            to="/dashboard"
+            className="inline-flex items-center gap-2 mt-6 bg-heading text-surface hover:opacity-90 px-6 py-2.5 rounded-xl text-sm font-medium transition-all"
           >
             Continue Studying
           </Link>
@@ -70,13 +70,13 @@ export default function Certificate() {
 
   return (
     <div className="max-w-3xl mx-auto py-8">
-      <Link to="/" className="text-muted hover:text-heading text-sm flex items-center gap-1 mb-8">
+      <Link to="/dashboard" className="text-muted hover:text-heading text-sm flex items-center gap-1 mb-8">
         <ArrowLeft className="w-4 h-4" /> Dashboard
       </Link>
 
       <div className="text-center mb-8">
-        <h1 className="font-display text-2xl font-semibold text-heading flex items-center gap-3 justify-center">
-          <Award className="w-7 h-7 text-warning" />
+        <h1 className="font-display text-2xl font-medium text-heading flex items-center gap-3 justify-center">
+          <Award className="w-6 h-6 text-faint" />
           Certificate of Completion
         </h1>
         <p className="text-muted mt-2">Congratulations on completing the study guide!</p>
@@ -95,28 +95,26 @@ export default function Certificate() {
 
         <div className="text-center relative z-10">
           {/* Logo */}
-          <div className="w-16 h-16 bg-primary/15 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Trophy className="w-8 h-8 text-primary" />
-          </div>
+          <Trophy className="w-8 h-8 text-faint mx-auto mb-4" />
 
           <p className="text-faint uppercase tracking-widest text-sm mb-2">Certificate of Completion</p>
-          <h2 className="font-display text-3xl font-semibold text-heading mb-1">Claude Certified Architect</h2>
+          <h2 className="font-display text-3xl font-medium text-heading mb-1">Claude Certified Architect</h2>
           <p className="text-primary-light text-lg mb-8">Foundations Study Guide</p>
 
           <p className="text-muted text-sm mb-1">Awarded to</p>
-          <p className="text-2xl font-semibold text-heading mb-8">{userName}</p>
+          <p className="text-2xl font-display font-medium text-heading mb-8">{userName}</p>
 
           <div className="flex justify-center gap-4 sm:gap-8 mb-8 flex-wrap">
             <div className="text-center">
-              <p className="text-xl sm:text-2xl font-bold text-primary">{bestScore.score}/{bestScore.total}</p>
+              <p className="text-xl sm:text-2xl font-display font-medium text-heading tabular-nums">{bestScore.score}/{bestScore.total}</p>
               <p className="text-xs text-faint">Exam Score</p>
             </div>
             <div className="text-center">
-              <p className="text-xl sm:text-2xl font-bold text-success">{completedCourses}/{totalCourses}</p>
+              <p className="text-xl sm:text-2xl font-display font-medium text-heading tabular-nums">{completedCourses}/{totalCourses}</p>
               <p className="text-xs text-faint">Courses</p>
             </div>
             <div className="text-center">
-              <p className="text-xl sm:text-2xl font-bold text-accent">
+              <p className="text-xl sm:text-2xl font-display font-medium text-heading tabular-nums">
                 {Math.round((bestScore.score / bestScore.total) * 1000)}
               </p>
               <p className="text-xs text-faint">Score (out of 1000)</p>
@@ -136,13 +134,13 @@ export default function Certificate() {
       <div className="flex justify-center gap-3 sm:gap-4 mt-6 sm:mt-8 flex-wrap">
         <button
           onClick={() => window.print()}
-          className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-ivory px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
+          className="flex items-center gap-2 bg-heading text-surface hover:opacity-90 px-6 py-2.5 rounded-xl text-sm font-medium transition-all"
         >
           <Download className="w-4 h-4" />
           Print / Save as PDF
         </button>
         <Link
-          to="/"
+          to="/dashboard"
           className="flex items-center gap-2 bg-surface-lighter hover:bg-surface-lighter/80 text-body px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
         >
           Back to Dashboard

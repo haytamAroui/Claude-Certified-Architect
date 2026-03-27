@@ -26,12 +26,12 @@ export default function Roadmap() {
 
   return (
     <div>
-      <Link to="/" className="text-muted hover:text-heading text-sm flex items-center gap-1 mb-6">
+      <Link to="/dashboard" className="text-muted hover:text-heading text-sm flex items-center gap-1 mb-6">
         <ArrowLeft className="w-4 h-4" /> Back to Dashboard
       </Link>
       <div className="flex items-center gap-3 mb-8">
-        <Map className="w-6 h-6 text-success" />
-        <h1 className="font-display text-2xl sm:text-3xl font-semibold text-heading">18-Day Study Roadmap</h1>
+        <Map className="w-5 h-5 text-faint" />
+        <h1 className="font-display text-2xl sm:text-3xl font-medium text-heading">18-Day Study Roadmap</h1>
       </div>
       <div className="prose max-w-none">
         <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: InternalLink }}>

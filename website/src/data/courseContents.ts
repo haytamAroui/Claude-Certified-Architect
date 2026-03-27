@@ -3024,4 +3024,849 @@ Allocate your final review time proportionally to exam weight:
 | Caching & cost | Course 5 | 5.5 |
 | Error recovery | Course 5 | 5.6 |
 | Exam traps & edge cases | Course 6 | — |`,
+
+  '7': `# Course 7: Claude Code Hands-On
+
+> **Covers Domains 2 & 3** — Practical mastery of every Claude Code feature.
+
+---
+
+## Module 7.1 — Slash Commands
+
+Slash commands are shortcuts that control Claude's behavior during an interactive session. They come in several types:
+
+- **Built-in commands**: Provided by Claude Code (\`/help\`, \`/clear\`, \`/model\`)
+- **Skills**: User-defined commands created as \`SKILL.md\` files (\`/optimize\`, \`/pr\`)
+- **Plugin commands**: Commands from installed plugins (\`/frontend-design:frontend-design\`)
+- **MCP prompts**: Commands from MCP servers (\`/mcp__github__list_prs\`)
+
+> **Note**: Custom slash commands have been merged into skills. Files in \`.claude/commands/\` still work, but skills (\`.claude/skills/\`) are now the recommended approach.
+
+### Built-in Commands Reference
+
+There are **55+ built-in commands** and **5 bundled skills** available. Type \`/\` in Claude Code to see the full list.
+
+| Command | Purpose |
+|---------|---------|
+| \`/add-dir <path>\` | Add working directory |
+| \`/agents\` | Manage agent configurations |
+| \`/branch [name]\` | Branch conversation into a new session |
+| \`/clear\` | Clear conversation (aliases: \`/reset\`, \`/new\`) |
+| \`/compact [instructions]\` | Compact conversation with optional focus |
+| \`/config\` | Open Settings (alias: \`/settings\`) |
+| \`/context\` | Visualize context usage as colored grid |
+| \`/cost\` | Show token usage statistics |
+| \`/diff\` | Interactive diff viewer for uncommitted changes |
+| \`/doctor\` | Diagnose installation health |
+| \`/effort [low\\|medium\\|high\\|max]\` | Set effort level. \`max\` requires Opus 4.6 |
+| \`/export [filename]\` | Export conversation to file or clipboard |
+| \`/init\` | Initialize \`CLAUDE.md\` |
+| \`/mcp\` | Manage MCP servers and OAuth |
+| \`/memory\` | Edit \`CLAUDE.md\`, toggle auto-memory |
+| \`/model [model]\` | Select model with left/right arrows for effort |
+| \`/permissions\` | View/update permissions |
+| \`/plan [description]\` | Enter plan mode |
+| \`/plugin\` | Manage plugins |
+| \`/resume [session]\` | Resume conversation (alias: \`/continue\`) |
+| \`/rewind\` | Rewind conversation and/or code (alias: \`/checkpoint\`) |
+| \`/schedule [description]\` | Create/manage scheduled tasks |
+| \`/skills\` | List available skills |
+| \`/tasks\` | List/manage background tasks |
+| \`/voice\` | Toggle push-to-talk voice dictation |
+
+### Bundled Skills
+
+| Skill | Purpose |
+|-------|---------|
+| \`/batch <instruction>\` | Orchestrate large-scale parallel changes using worktrees |
+| \`/claude-api\` | Load Claude API reference for project language |
+| \`/debug [description]\` | Enable debug logging |
+| \`/loop [interval] <prompt>\` | Run prompt repeatedly on interval |
+| \`/simplify [focus]\` | Review changed files for code quality |
+
+### Custom Commands (Now Skills)
+
+| Approach | Location | Status |
+|----------|----------|--------|
+| **Skills (Recommended)** | \`.claude/skills/<name>/SKILL.md\` | Current standard |
+| **Legacy Commands** | \`.claude/commands/<name>.md\` | Still works |
+
+If a skill and a command share the same name, the **skill takes precedence**.
+
+### Frontmatter Reference
+
+| Field | Purpose | Default |
+|-------|---------|---------|
+| \`name\` | Command name (becomes \`/name\`) | Directory name |
+| \`description\` | Brief description (helps Claude know when to use it) | First paragraph |
+| \`argument-hint\` | Expected arguments for auto-completion | None |
+| \`allowed-tools\` | Tools the command can use without permission | Inherits |
+| \`model\` | Specific model to use | Inherits |
+| \`disable-model-invocation\` | If \`true\`, only user can invoke (not Claude) | \`false\` |
+| \`user-invocable\` | If \`false\`, hide from \`/\` menu | \`true\` |
+| \`context\` | Set to \`fork\` to run in isolated subagent | None |
+| \`agent\` | Agent type when using \`context: fork\` | \`general-purpose\` |
+| \`hooks\` | Skill-scoped hooks (PreToolUse, PostToolUse, Stop) | None |
+
+### Arguments & Dynamic Context
+
+\`\`\`yaml
+---
+name: commit
+description: Create a git commit with context
+allowed-tools: Bash(git *)
+---
+
+## Context
+- Current git status: !\\\`git status\\\`
+- Current git diff: !\\\`git diff HEAD\\\`
+- Current branch: !\\\`git branch --show-current\\\`
+- Recent commits: !\\\`git log --oneline -5\\\`
+
+## Your task
+Based on the above changes, create a single git commit.
+\`\`\`
+
+Usage: \`/commit fix auth bug\` → \`$ARGUMENTS\` becomes \`"fix auth bug"\`
+
+### MCP Prompts as Commands
+
+MCP servers can expose prompts as slash commands:
+
+\`\`\`bash
+/mcp__github__list_prs
+/mcp__github__pr_review 456
+\`\`\`
+
+Permission syntax: \`mcp__github\` (entire server), \`mcp__github__*\` (wildcard), \`mcp__github__get_issue\` (specific tool).
+
+---
+
+## Module 7.2 — Memory & CLAUDE.md
+
+Memory in Claude Code provides persistent context that carries across multiple sessions and conversations.
+
+### Memory Commands Quick Reference
+
+| Command | Purpose | When to Use |
+|---------|---------|-------------|
+| \`/init\` | Initialize project memory | Starting new project, first-time CLAUDE.md setup |
+| \`/memory\` | Edit memory files in editor | Extensive updates, reorganization, reviewing content |
+| \`#\` prefix | Quick single-line memory add | Adding quick rules during conversation |
+| \`@path/to/file\` | Import external content | Referencing existing documentation in CLAUDE.md |
+
+### Memory Hierarchy (in order of precedence)
+
+1. **Managed Policy** — Organization-wide instructions
+   - macOS: \`/Library/Application Support/ClaudeCode/CLAUDE.md\`
+   - Linux/WSL: \`/etc/claude-code/CLAUDE.md\`
+
+2. **Managed Drop-ins** — Alphabetically merged policy files (v2.1.83+)
+
+3. **Project Memory** — Team-shared context (version controlled)
+   - \`./.claude/CLAUDE.md\` or \`./CLAUDE.md\` (in repository root)
+
+4. **Project Rules** — Modular, topic-specific project instructions
+   - \`./.claude/rules/*.md\`
+
+5. **User Memory** — Personal preferences (all projects)
+   - \`~/.claude/CLAUDE.md\`
+
+6. **User-Level Rules** — Personal rules (all projects)
+   - \`~/.claude/rules/*.md\`
+
+7. **Local Project Memory** — Personal project-specific preferences
+   - \`./CLAUDE.local.md\`
+
+8. **Auto Memory** — Claude's automatic notes and learnings
+   - \`~/.claude/projects/<project>/memory/\`
+
+### Modular Rules System
+
+Path-specific rules with YAML frontmatter in \`.claude/rules/\`:
+
+\`\`\`yaml
+---
+path: "src/api/**/*.ts"
+---
+All API endpoints must return typed responses.
+Use Zod for input validation.
+Never expose internal error details to clients.
+\`\`\`
+
+### Memory Imports
+
+CLAUDE.md files support the \`@path/to/file\` syntax to include external content:
+
+\`\`\`markdown
+See @README.md for project overview
+See @package.json for available npm commands
+See @docs/architecture.md for system design
+@~/.claude/my-project-instructions.md
+\`\`\`
+
+- Recursive imports supported (max depth 5)
+- First-time imports from external locations trigger approval dialog
+- Import directives are NOT evaluated inside code blocks
+
+### Auto Memory
+
+Auto memory records things Claude learns during conversations — stored in \`~/.claude/projects/<project>/memory/\`. Disable with: \`CLAUDE_CODE_DISABLE_AUTO_MEMORY=true\`
+
+| Do | Don't |
+|------|---------|
+| Keep project standards in project CLAUDE.md | Put personal preferences in project CLAUDE.md |
+| Use path-specific rules for directory conventions | Create overly broad rules |
+| Use \`@\` imports to reference existing docs | Duplicate documentation content |
+| Review and update memory periodically | Let memory become stale |
+
+---
+
+## Module 7.3 — Skills
+
+Agent Skills are reusable, filesystem-based capabilities that extend Claude's functionality. They package domain-specific expertise into discoverable components that Claude automatically uses when relevant.
+
+### Progressive Disclosure
+
+| Level | When Loaded | Token Cost | Content |
+|-------|------------|------------|---------|
+| **Level 1: Metadata** | Always (at startup) | ~100 tokens per Skill | \`name\` and \`description\` from YAML frontmatter |
+| **Level 2: Instructions** | When Skill is triggered | Under 5k tokens | SKILL.md body with instructions and guidance |
+| **Level 3+: Resources** | As needed | Effectively unlimited | Bundled files executed via bash without loading into context |
+
+This means you can install many Skills without context penalty.
+
+### Skill Types & Locations
+
+| Type | Location | Scope | Best For |
+|------|----------|-------|----------|
+| **Enterprise** | Managed settings | All org users | Organization-wide standards |
+| **Personal** | \`~/.claude/skills/<name>/SKILL.md\` | Individual | Personal workflows |
+| **Project** | \`.claude/skills/<name>/SKILL.md\` | Team | Team standards |
+| **Plugin** | \`<plugin>/skills/<name>/SKILL.md\` | Where enabled | Bundled with plugins |
+
+When skills share the same name, higher-priority locations win: **enterprise > personal > project**.
+
+### Creating a Skill
+
+\`\`\`yaml
+---
+name: code-review
+description: Comprehensive code review with security and performance checks. Use when reviewing PRs or code changes.
+allowed-tools: Read, Grep, Glob, Bash
+user-invocable: true
+---
+
+## Instructions
+Review the code for: security, performance, readability.
+
+## Checklist
+@templates/checklist.md
+\`\`\`
+
+### Frontmatter Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| \`name\` | Yes | Skill name (becomes \`/name\`) |
+| \`description\` | Yes | When to use this skill (triggers auto-invocation) |
+| \`allowed-tools\` | No | Restrict tool access |
+| \`model\` | No | Model: \`sonnet\`, \`opus\`, \`haiku\` |
+| \`user-invocable\` | No | Show in \`/\` menu (default: true) |
+| \`disable-model-invocation\` | No | Prevent auto-triggering (default: false) |
+| \`context\` | No | \`fork\` runs in isolated subagent context |
+| \`agent\` | No | Agent type when using \`context: fork\` |
+| \`effort\` | No | Reasoning effort level |
+
+### String Substitutions
+
+| Variable | Description |
+|----------|-------------|
+| \`$ARGUMENTS\` | Full argument string from user |
+| \`$0\`, \`$1\`, ... | Individual arguments |
+| \`\${CLAUDE_SESSION_ID}\` | Current session ID |
+| \`\${CLAUDE_SKILL_DIR}\` | Absolute path to skill directory |
+| \`!\\\`command\\\`\` | Shell command output (dynamic context) |
+
+### Skills vs Other Features
+
+| Feature | Invocation | Scope | Best For |
+|---------|-----------|-------|----------|
+| **Skills** | Auto or \`/name\` | Reusable | Repeated workflows |
+| **Memory** | Always loaded | Persistent | Rules and preferences |
+| **Subagents** | Delegated | Isolated | Complex subtasks |
+| **Hooks** | Event-driven | Automatic | Validation, automation |
+
+---
+
+## Module 7.4 — Subagents
+
+Subagents are specialized AI assistants that Claude Code can delegate tasks to. Each subagent has a separate context window and can be configured with specific tools and a custom system prompt.
+
+### Key Benefits
+
+| Benefit | Description |
+|---------|-------------|
+| **Context preservation** | Operates in separate context, preventing pollution of main conversation |
+| **Specialized expertise** | Fine-tuned for specific domains with higher success rates |
+| **Reusability** | Use across different projects and share with teams |
+| **Flexible permissions** | Different tool access levels for different subagent types |
+| **Scalability** | Multiple agents work on different aspects simultaneously |
+
+### File Locations
+
+| Priority | Type | Location | Scope |
+|----------|------|----------|-------|
+| 1 (highest) | **CLI-defined** | Via \`--agents\` flag (JSON) | Session only |
+| 2 | **Project subagents** | \`.claude/agents/\` | Current project |
+| 3 | **User subagents** | \`~/.claude/agents/\` | All projects |
+| 4 (lowest) | **Plugin agents** | Plugin \`agents/\` directory | Via plugins |
+
+### Configuration
+
+Subagents are defined in YAML frontmatter followed by the system prompt in markdown:
+
+\`\`\`yaml
+---
+name: security-reviewer
+description: Reviews code for security vulnerabilities
+tools: Read, Grep, Glob, Bash
+model: opus
+permissionMode: plan
+maxTurns: 30
+skills: security
+memory: project
+---
+
+You are a security expert. Review code for OWASP Top 10 vulnerabilities.
+Focus on: injection, auth, data exposure, XXE, access control.
+\`\`\`
+
+### Configuration Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| \`name\` | Yes | Unique identifier (lowercase letters and hyphens) |
+| \`description\` | Yes | When to invoke. Include "use PROACTIVELY" to encourage automatic invocation |
+| \`tools\` | No | Comma-separated tools. Omit to inherit all. Supports \`Agent(agent_name)\` syntax |
+| \`model\` | No | \`sonnet\`, \`opus\`, \`haiku\`, or \`inherit\` |
+| \`permissionMode\` | No | \`default\`, \`acceptEdits\`, \`dontAsk\`, \`bypassPermissions\`, \`plan\` |
+| \`maxTurns\` | No | Maximum agentic turns |
+| \`skills\` | No | Skills to preload into context at startup |
+| \`mcpServers\` | No | MCP servers to make available |
+| \`memory\` | No | Persistent memory scope: \`user\`, \`project\`, or \`local\` |
+| \`background\` | No | Set to \`true\` to always run as background task |
+| \`effort\` | No | Reasoning effort: \`low\`, \`medium\`, \`high\`, \`max\` |
+| \`isolation\` | No | Set to \`worktree\` for git worktree isolation |
+
+### Built-in Subagents
+
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| **general-purpose** | Inherits | Complex, multi-step tasks |
+| **Plan** | Inherits | Research for plan mode |
+| **Explore** | Haiku | Read-only codebase exploration (quick/medium/very thorough) |
+| **Bash** | Inherits | Terminal commands in separate context |
+| **statusline-setup** | Sonnet | Configure status line |
+| **Claude Code Guide** | Haiku | Answer Claude Code feature questions |
+
+### Background Subagents
+
+| Shortcut | Action |
+|----------|--------|
+| \`Ctrl+B\` | Send current agent to background |
+| \`Ctrl+F\` | Kill all background agents |
+
+### When to Use Subagents
+
+| Scenario | Recommendation |
+|----------|----------------|
+| Simple file edits | Use main agent directly |
+| Complex code review | Spawn code-reviewer subagent |
+| Multi-file refactor | Spawn implementation subagent |
+| Research question | Use built-in Explore agent |
+| Security audit | Spawn security-reviewer with plan mode |
+| Parallel tasks | Spawn multiple subagents |
+
+---
+
+## Module 7.5 — MCP Integration
+
+MCP (Model Context Protocol) is a standardized way for Claude to access external tools, APIs, and real-time data sources. Unlike Memory, MCP provides live access to changing data.
+
+### Installation Methods
+
+\`\`\`bash
+# HTTP transport (recommended for remote)
+claude mcp add --transport http notion https://mcp.notion.com/mcp
+
+# HTTP with authentication
+claude mcp add --transport http secure-api https://api.example.com/mcp \\
+  --header "Authorization: Bearer your-token"
+
+# Stdio transport (local tools)
+claude mcp add --transport stdio myserver -- npx @myorg/mcp-server
+
+# With environment variables
+claude mcp add --transport stdio myserver --env KEY=value -- npx server
+\`\`\`
+
+| Protocol | Status | Use Case |
+|----------|--------|----------|
+| HTTP | Recommended | Remote servers, cloud APIs |
+| Stdio | Supported | Local tools, CLI wrappers |
+| SSE | Deprecated | Legacy servers |
+| WebSocket | Supported | Real-time streaming |
+
+### MCP Scopes
+
+| Scope | Config File | Shared | Best For |
+|-------|-------------|--------|----------|
+| **Local** | \`~/.claude.json\` | No | Personal API keys |
+| **Project** | \`.mcp.json\` | Yes (git) | Team-shared servers |
+| **User** | \`~/.claude.json\` | No | Personal tools |
+
+### MCP Tool Search
+
+Automatic discovery of available MCP tools:
+
+\`\`\`bash
+export ENABLE_TOOL_SEARCH=auto  # auto | true | false
+\`\`\`
+
+### MCP Prompts as Slash Commands
+
+\`\`\`bash
+/mcp__github__list_prs
+/mcp__github__pr_review 456
+/mcp__jira__create_issue "Bug title" high
+\`\`\`
+
+### MCP Resources via @ Mentions
+
+\`\`\`bash
+@github:repo://owner/repo/contents/path
+@filesystem:file:///path/to/data
+\`\`\`
+
+### MCP Output Limits
+
+| Threshold | Behavior |
+|-----------|----------|
+| 10K characters | Warning logged |
+| 25K characters | Default max (truncated) |
+| 50K characters | Written to disk, path provided |
+
+Configure with: \`MAX_MCP_OUTPUT_TOKENS\` environment variable.
+
+### Context Bloat Solution
+
+MCP tools can return large payloads that waste tokens. Solution: use MCP tools as **code APIs** — have Claude write code that calls the MCP tool and processes results locally, instead of piping raw data through the context window.
+
+---
+
+## Module 7.6 — Hooks
+
+Hooks are automated actions (shell commands, HTTP webhooks, LLM prompts, or subagent evaluations) that execute automatically when specific events occur in Claude Code.
+
+### Configuration
+
+\`\`\`json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/validate.py",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}
+\`\`\`
+
+Configuration files (priority order):
+- \`~/.claude/settings.json\` — User settings (all projects)
+- \`.claude/settings.json\` — Project settings (shareable)
+- \`.claude/settings.local.json\` — Local project settings (not committed)
+- Managed policy — Organization-wide
+- Plugin hooks — Plugin-scoped
+- Skill/Agent frontmatter — Component lifetime
+
+### Matcher Patterns
+
+| Pattern | Description | Example |
+|---------|-------------|---------|
+| Exact string | Matches specific tool | \`"Write"\` |
+| Regex pattern | Matches multiple tools | \`"Edit\\|Write"\` |
+| Wildcard | Matches all tools | \`"*"\` |
+| MCP tools | Server and tool pattern | \`"mcp__memory__.*"\` |
+
+### Hook Types
+
+| Type | Description | Use Case |
+|------|-------------|----------|
+| **command** | Shell command (JSON stdin/stdout) | Validation scripts, formatting |
+| **http** | Webhook (POST JSON, receive JSON) | External integrations |
+| **prompt** | LLM-evaluated prompt | Intelligent task completion |
+| **agent** | Subagent spawned for evaluation | Complex multi-step checks |
+
+### 25 Hook Events
+
+| Event | When Triggered | Can Block | Common Use |
+|-------|---------------|-----------|------------|
+| **SessionStart** | Session begins/resumes | No | Environment setup |
+| **InstructionsLoaded** | CLAUDE.md loaded | No | Modify instructions |
+| **UserPromptSubmit** | User submits prompt | Yes | Validate prompts |
+| **PreToolUse** | Before tool execution | Yes (allow/deny/ask) | Validate inputs |
+| **PermissionRequest** | Permission dialog shown | Yes | Auto-approve/deny |
+| **PostToolUse** | After tool succeeds | No | Add context, feedback |
+| **PostToolUseFailure** | Tool execution fails | No | Error handling |
+| **SubagentStart** | Subagent spawned | No | Subagent setup |
+| **SubagentStop** | Subagent finishes | Yes | Subagent validation |
+| **Stop** | Claude finishes responding | Yes | Task completion check |
+| **TaskCompleted** | Task marked complete | Yes | Post-task actions |
+| **FileChanged** | Watched file changes | No | File monitoring |
+| **WorktreeCreate** | Worktree being created | Yes | Worktree initialization |
+| **SessionEnd** | Session terminates | No | Cleanup, logging |
+
+### Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| **0** | Success — continue, parse JSON stdout |
+| **2** | Blocking error — block the operation |
+| **Other** | Non-blocking error — log and continue |
+
+### PreToolUse Output Control
+
+\`\`\`json
+{
+  "permissionDecision": "allow",
+  "permissionDecisionReason": "Command is safe"
+}
+\`\`\`
+
+Values: \`"allow"\`, \`"deny"\`, \`"ask"\`
+
+---
+
+## Module 7.7 — Plugins
+
+Plugins are complete feature bundles that package slash commands, subagents, MCP servers, hooks, and skills into a single installable unit.
+
+### Plugin Types
+
+| Type | Scope | Authority |
+|------|-------|-----------|
+| **Official** | Global | Anthropic |
+| **Community** | Public | Community developers |
+| **Organization** | Internal | Your company |
+| **Personal** | Individual | You |
+
+### Plugin Structure
+
+\`\`\`
+my-plugin/
+├── .claude-plugin/
+│   └── plugin.json          # Plugin manifest
+├── commands/                 # Slash commands
+├── agents/                   # Subagents
+├── skills/                   # Skills
+├── hooks/                    # Hook scripts
+├── mcp/                      # MCP configs
+└── README.md
+\`\`\`
+
+### Plugin CLI Commands
+
+\`\`\`bash
+claude plugin install <name>       # From marketplace
+claude plugin install github:user/repo  # From GitHub
+claude --plugin-dir ./my-plugin    # Local development
+claude plugin uninstall <name>
+claude plugin list
+claude plugin enable <name>
+claude plugin disable <name>
+claude plugin validate
+\`\`\`
+
+### Plugin Features Comparison
+
+| Feature | Slash Command | Skill | Subagent | Plugin |
+|---------|---------------|-------|----------|--------|
+| Installation | Manual copy | Manual copy | Manual config | One command |
+| Setup Time | 5 min | 10 min | 15 min | 2 min |
+| Versioning | Manual | Manual | Manual | Automatic |
+| Updates | Manual | Manual | Manual | Auto-available |
+| Marketplace | No | No | No | Yes |
+
+### Plugin Security
+
+Plugin subagents CANNOT have:
+- \`hooks\`
+- \`mcpServers\`
+- \`permissionMode\`
+
+These are restricted for security — only the plugin manifest can define hooks and MCP servers at the plugin level.
+
+---
+
+## Module 7.8 — Checkpoints & Rewind
+
+Checkpoints allow you to save conversation state and rewind to previous points, enabling safe experimentation.
+
+### Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Checkpoint** | Snapshot of conversation state including messages, files, and context |
+| **Rewind** | Return to a previous checkpoint, discarding subsequent changes |
+| **Branch Point** | Checkpoint from which multiple approaches are explored |
+
+### Accessing Checkpoints
+
+- Press \`Esc\` twice to open the checkpoint interface
+- Use \`/rewind\` command (alias: \`/checkpoint\`)
+
+### Rewind Options
+
+1. **Restore code and conversation** — Revert both files and messages
+2. **Restore conversation** — Rewind messages only, keep current code
+3. **Restore code** — Revert file changes only, keep conversation
+4. **Summarize from here** — Compress conversation from this point forward
+5. **Never mind** — Cancel
+
+### Automatic Checkpoints
+
+- **Every user prompt** — A new checkpoint is created with each user input
+- **Persistent** — Checkpoints persist across sessions
+- **Auto-cleaned** — Automatically cleaned up after 30 days
+
+### Use Cases
+
+| Scenario | Workflow |
+|----------|----------|
+| **Exploring Approaches** | Save → Try A → Save → Rewind → Try B → Compare |
+| **Safe Refactoring** | Save → Refactor → Test → If fail: Rewind |
+| **A/B Testing** | Save → Design A → Save → Rewind → Design B |
+| **Mistake Recovery** | Notice issue → Rewind to last good state |
+
+### Checkpoints vs Git
+
+| Feature | Git | Checkpoints |
+|---------|-----|-------------|
+| Scope | File system | Conversation + files |
+| Persistence | Permanent | 30 days |
+| Granularity | Commits | Every prompt |
+| Speed | Slower | Instant |
+
+### Limitations
+
+- Bash command side-effects are NOT tracked (e.g., \`npm install\`)
+- External system changes are NOT tracked
+- Not a replacement for version control
+
+---
+
+## Module 7.9 — Advanced Features
+
+### Permission Modes
+
+| Mode | Behavior |
+|------|----------|
+| \`default\` | Ask for risky operations |
+| \`acceptEdits\` | Auto-accept file edits, ask for bash |
+| \`plan\` | Read-only analysis, no writes |
+| \`auto\` | Auto-accept most operations (safety classifier) |
+| \`dontAsk\` | Skip confirmations |
+| \`bypassPermissions\` | No restrictions (dangerous) |
+
+### Planning Mode
+
+Deep reasoning before execution:
+
+\`\`\`bash
+claude --permission-mode plan "design the auth system"
+/plan design a caching strategy
+\`\`\`
+
+### Extended Thinking
+
+\`\`\`bash
+claude --effort high "optimize this algorithm"
+claude --effort max "design system architecture"  # Opus 4.6 only
+export MAX_THINKING_TOKENS=16000
+\`\`\`
+
+### Auto Mode
+
+Autonomous operation with background safety classifier:
+
+\`\`\`bash
+claude --enable-auto-mode
+claude --permission-mode auto "implement the feature"
+\`\`\`
+
+### Headless Mode (Print)
+
+Non-interactive mode for CI/CD and automation:
+
+\`\`\`bash
+claude -p "review this code" --output-format json
+cat file.py | claude -p "find bugs" > report.txt
+claude -p --max-turns 1 "analyze" > out.json
+\`\`\`
+
+### Background Tasks & Scheduling
+
+\`\`\`bash
+# Press Ctrl+B to send current task to background
+# Press Ctrl+F to kill all background tasks
+/loop 5m /pulse    # Run /pulse every 5 minutes
+/schedule "run tests every morning at 9am"
+\`\`\`
+
+### Git Worktrees
+
+Isolated parallel development:
+
+\`\`\`bash
+claude -w  # Start in isolated worktree
+\`\`\`
+
+### Channels
+
+Multi-channel communication:
+
+\`\`\`bash
+claude --channels discord,telegram
+\`\`\`
+
+### Sandboxing
+
+- macOS: Apple Seatbelt
+- Linux: Docker containers
+- Both: File system restrictions, network filtering
+
+---
+
+## Module 7.10 — CLI Reference
+
+### CLI Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| \`claude\` | Start interactive REPL | \`claude\` |
+| \`claude "query"\` | Start REPL with initial prompt | \`claude "explain this project"\` |
+| \`claude -p "query"\` | Print mode — query then exit | \`claude -p "explain this function"\` |
+| \`cat file \\| claude -p "query"\` | Process piped content | \`cat logs.txt \\| claude -p "explain"\` |
+| \`claude -c\` | Continue most recent conversation | \`claude -c\` |
+| \`claude -r "session" "query"\` | Resume session by ID or name | \`claude -r "auth-refactor" "finish"\` |
+| \`claude mcp\` | Configure MCP servers | \`claude mcp add ...\` |
+| \`claude agents\` | List all configured subagents | \`claude agents\` |
+| \`claude plugin\` | Manage plugins | \`claude plugin install my-plugin\` |
+
+### Core Flags
+
+| Flag | Description | Example |
+|------|-------------|---------|
+| \`-p, --print\` | Print response without interactive mode | \`claude -p "query"\` |
+| \`-c, --continue\` | Load most recent conversation | \`claude --continue\` |
+| \`-r, --resume\` | Resume specific session by ID or name | \`claude --resume auth-refactor\` |
+| \`-w, --worktree\` | Start in isolated git worktree | \`claude -w\` |
+| \`-n, --name\` | Session display name | \`claude -n "auth-refactor"\` |
+| \`--model\` | Set model (sonnet, opus, haiku) | \`claude --model opus\` |
+| \`--effort\` | Set effort level (low/medium/high/max) | \`claude --effort high\` |
+| \`--output-format\` | Output: text, json, stream-json | \`claude -p --output-format json\` |
+| \`--tools\` | Restrict available tools | \`claude --tools "Read,Grep,Glob"\` |
+| \`--permission-mode\` | Set permission level | \`claude --permission-mode plan\` |
+| \`--bare\` | Minimal mode (skip hooks, skills, plugins) | \`claude --bare\` |
+| \`--enable-auto-mode\` | Unlock auto permission mode | \`claude --enable-auto-mode\` |
+| \`--channels\` | Subscribe to MCP channel plugins | \`claude --channels discord\` |
+
+### Model Selection
+
+\`\`\`bash
+claude --model opus "complex architecture task"
+claude --model sonnet "implement this feature"
+claude --model haiku -p "format this JSON"
+\`\`\`
+
+| Model | ID | Context Window |
+|-------|-----|----------------|
+| Opus 4.6 | claude-opus-4-6 | 1M tokens |
+| Sonnet 4.6 | claude-sonnet-4-6 | 1M tokens |
+| Haiku 4.5 | claude-haiku-4-5 | 1M tokens |
+
+### Output Formats
+
+\`\`\`bash
+claude -p "query"                                  # Plain text
+claude -p --output-format json "query"            # Full JSON
+claude -p --output-format stream-json "query"     # Streaming JSON
+claude -p --json-schema '{"type":"object"}' "q"   # Validated JSON
+\`\`\`
+
+### System Prompt Customization
+
+\`\`\`bash
+claude --system-prompt "You are a Python expert"
+claude --system-prompt-file ./prompt.txt "query"  # Print mode only
+claude --append-system-prompt "Always use TypeScript"
+\`\`\`
+
+### Tool & Permission Management
+
+\`\`\`bash
+claude --tools "Read,Grep,Glob" -p "find TODOs"
+claude --allowedTools "Bash(git status:*)" "Bash(git log:*)"
+claude --disallowedTools "Bash(rm -rf:*)" "Bash(git push --force:*)"
+\`\`\`
+
+### CI/CD Integration
+
+\`\`\`yaml
+# GitHub Actions example
+- name: Code Review
+  run: |
+    claude -p --output-format json \\
+      --max-turns 1 \\
+      "Review changes for security and performance" \\
+      > review.json
+\`\`\`
+
+### Key Environment Variables
+
+| Variable | Purpose |
+|----------|---------|
+| \`ANTHROPIC_API_KEY\` | API authentication |
+| \`ANTHROPIC_MODEL\` | Default model |
+| \`MAX_THINKING_TOKENS\` | Extended thinking budget |
+| \`CLAUDE_CODE_EFFORT_LEVEL\` | Default effort level |
+| \`ENABLE_TOOL_SEARCH\` | MCP tool discovery |
+| \`CLAUDE_CODE_DISABLE_AUTO_MEMORY\` | Disable auto memory |
+| \`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS\` | Enable agent teams |
+
+---
+
+## Cross-Reference: Features → Exam Domains
+
+| Feature | Primary Domain | Also Tested In |
+|---------|---------------|----------------|
+| Slash Commands | D3 | — |
+| Memory & CLAUDE.md | D3 | D5 (context preservation) |
+| Skills | D3 | D2 (tool distribution) |
+| Subagents | D1 (multi-agent) | D3 (configuration) |
+| MCP | D2 (tools) | D3 (configuration) |
+| Hooks | D3 | D1 (enforcement patterns) |
+| Plugins | D3 | D2 (tool distribution) |
+| Checkpoints | D3 | D5 (context management) |
+| Advanced Features | D3 | D1 (auto mode, planning) |
+| CLI | D3 | D4 (headless prompting) |`,
 };

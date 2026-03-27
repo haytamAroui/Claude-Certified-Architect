@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Clock, CheckCircle, XCircle, Trophy, RotateCcw, Flag, Shield } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Clock, CheckCircle, XCircle, Trophy, RotateCcw, Flag, Shield } from 'lucide-react'
 import { useProgress } from '../data/useProgress'
 import { examData } from '../data/examData'
 import ExamTimer from '../components/ExamTimer'
@@ -82,7 +82,7 @@ export default function ExamPage() {
     return (
       <div className="text-center py-20">
         <p className="text-muted">Exam not found</p>
-        <Link to="/" className="text-primary-light mt-2 inline-block">Back to Dashboard</Link>
+        <Link to="/dashboard" className="text-primary-light mt-2 inline-block">Back to Dashboard</Link>
       </div>
     )
   }
@@ -118,14 +118,12 @@ export default function ExamPage() {
   if (phase === 'intro') {
     return (
       <div className="max-w-2xl mx-auto text-center py-6 sm:py-12">
-        <Link to="/" className="text-muted hover:text-heading text-sm flex items-center gap-1 mb-6 sm:mb-8 justify-center">
+        <Link to="/dashboard" className="text-muted hover:text-heading text-sm flex items-center gap-1 mb-6 sm:mb-8 justify-center">
           <ArrowLeft className="w-4 h-4" /> Dashboard
         </Link>
         <div className="bg-surface-light border border-surface-lighter rounded-2xl p-5 sm:p-10">
-          <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Trophy className="w-8 h-8 text-accent" />
-          </div>
-          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-heading mb-2">Mock Exam {examId}</h1>
+          <Trophy className="w-8 h-8 text-faint mx-auto mb-6" />
+          <h1 className="font-display text-2xl sm:text-3xl font-medium text-heading mb-2">Mock Exam {examId}</h1>
           <p className="text-muted mb-6">
             {questions.length} questions — Passing: {passThreshold}/{questions.length} (720 points)
           </p>
@@ -151,7 +149,7 @@ export default function ExamPage() {
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <Trophy className={`w-4 h-4 ${mode === 'practice' ? 'text-primary' : 'text-faint'}`} />
-                <span className={`text-sm font-semibold ${mode === 'practice' ? 'text-heading' : 'text-body'}`}>
+                <span className={`text-sm font-medium ${mode === 'practice' ? 'text-heading' : 'text-body'}`}>
                   Practice Mode
                 </span>
               </div>
@@ -169,7 +167,7 @@ export default function ExamPage() {
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <Shield className={`w-4 h-4 ${mode === 'simulation' ? 'text-accent' : 'text-faint'}`} />
-                <span className={`text-sm font-semibold ${mode === 'simulation' ? 'text-heading' : 'text-body'}`}>
+                <span className={`text-sm font-medium ${mode === 'simulation' ? 'text-heading' : 'text-body'}`}>
                   Simulation Mode
                 </span>
               </div>
@@ -217,11 +215,7 @@ export default function ExamPage() {
 
           <button
             onClick={() => { setPhase('active'); setHighestReached(0) }}
-            className={`px-8 py-3 rounded-xl font-medium transition-colors text-lg ${
-              isSimulation
-                ? 'bg-accent hover:bg-accent/80 text-ivory'
-                : 'bg-primary hover:bg-primary-dark text-ivory'
-            }`}
+            className="px-8 py-3 rounded-xl font-medium transition-all text-lg bg-heading text-surface hover:opacity-90"
           >
             {isSimulation ? 'Start Simulation' : 'Start Exam'}
           </button>
@@ -239,7 +233,7 @@ export default function ExamPage() {
           <button onClick={() => phase === 'active' && !isSimulation ? setPhase('intro') : phase === 'review' ? restart() : undefined} className="text-muted hover:text-heading shrink-0" disabled={phase === 'active' && isSimulation}>
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h2 className="text-base sm:text-lg font-semibold text-heading truncate">
+          <h2 className="text-base sm:text-lg font-display font-medium text-heading truncate">
             Mock Exam {examId}
             {isSimulation && phase === 'active' && (
               <span className="ml-2 text-xs font-medium px-2 py-0.5 rounded-lg bg-accent/10 text-accent">SIM</span>
@@ -268,7 +262,7 @@ export default function ExamPage() {
           {phase === 'active' && (
             <button
               onClick={() => setShowSubmitConfirm(true)}
-              className="bg-primary hover:bg-primary-dark text-ivory px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors"
+              className="bg-heading text-surface px-3 sm:px-5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium hover:opacity-90 transition-all"
             >
               Submit
             </button>
@@ -287,7 +281,7 @@ export default function ExamPage() {
       <div className="flex gap-6 flex-col lg:flex-row">
         {/* Question panel */}
         <div className="flex-1">
-          <div className="bg-surface-light border border-surface-lighter rounded-xl p-5 sm:p-7">
+          <div className="bg-surface-light border border-surface-lighter rounded-2xl p-5 sm:p-7">
             {/* Question header */}
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm text-faint">
@@ -392,7 +386,7 @@ export default function ExamPage() {
                   disabled={current === 0}
                   className="flex items-center gap-1.5 text-sm text-muted hover:text-heading disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                  <ArrowLeft className="w-4 h-4" /> Previous
+                  <ChevronLeft className="w-4 h-4" /> Previous
                 </button>
               ) : (
                 <div />
@@ -402,7 +396,7 @@ export default function ExamPage() {
                   onClick={() => setShowSubmitConfirm(true)}
                   className="flex items-center gap-1.5 text-sm text-primary-light hover:text-primary font-medium transition-colors"
                 >
-                  Finish & Submit <ArrowRight className="w-4 h-4" />
+                  Finish & Submit <ChevronRight className="w-4 h-4" />
                 </button>
               ) : (
                 <button
@@ -410,7 +404,7 @@ export default function ExamPage() {
                   disabled={current === questions.length - 1}
                   className="flex items-center gap-1.5 text-sm text-muted hover:text-heading disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                  Next <ArrowRight className="w-4 h-4" />
+                  Next <ChevronRight className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -424,7 +418,7 @@ export default function ExamPage() {
 
         {/* Question grid sidebar */}
         <div className="lg:w-56 shrink-0 order-first lg:order-last">
-          <div className="bg-surface-light border border-surface-lighter rounded-xl p-3 sm:p-4 sticky top-6">
+          <div className="bg-surface-light border border-surface-lighter rounded-2xl p-3 sm:p-4 sticky top-6">
             <h3 className="text-sm font-medium text-muted mb-3">Questions</h3>
             <div className="grid grid-cols-10 sm:grid-cols-6 gap-1 sm:gap-1.5">
               {questions.map((q, i) => {
@@ -487,7 +481,7 @@ export default function ExamPage() {
       {showSubmitConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay/60" role="dialog" aria-modal="true" aria-label="Submit exam confirmation" onKeyDown={(e) => { if (e.key === 'Escape') setShowSubmitConfirm(false) }}>
           <div className="bg-surface-light border border-surface-lighter rounded-2xl p-8 max-w-sm w-full mx-4 animate-scale-in">
-            <h3 className="text-lg font-semibold text-heading mb-2">Submit Exam?</h3>
+            <h3 className="text-lg font-display font-medium text-heading mb-2">Submit Exam?</h3>
             <p className="text-sm text-muted mb-1">
               You have answered {totalAnswered} of {questions.length} questions.
             </p>
@@ -505,7 +499,7 @@ export default function ExamPage() {
               </button>
               <button
                 onClick={() => { setShowSubmitConfirm(false); handleSubmit() }}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-primary text-ivory text-sm font-medium hover:bg-primary-dark transition-colors"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-heading text-surface text-sm font-medium hover:opacity-90 transition-all"
               >
                 Submit
               </button>

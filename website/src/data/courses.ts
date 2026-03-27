@@ -12,7 +12,7 @@ export const courses: Course[] = [
     id: '1',
     title: 'Agentic Architecture & Orchestration',
     domain: 'Domain 1',
-    weight: '27%',
+    weight: '23%',
     description: 'The heaviest exam domain. Master the agentic loop, multi-agent patterns, hooks, and session management.',
     modules: [
       'The Agentic Loop & stop_reason',
@@ -42,7 +42,7 @@ export const courses: Course[] = [
     id: '3',
     title: 'Claude Code Configuration & Workflows',
     domain: 'Domain 3',
-    weight: '20%',
+    weight: '22%',
     description: 'CLAUDE.md hierarchy, custom commands, skills, plan mode, and CI/CD integration.',
     modules: [
       'CLAUDE.md Configuration Hierarchy',
@@ -72,7 +72,7 @@ export const courses: Course[] = [
     id: '5',
     title: 'Context Management & Reliability',
     domain: 'Domain 5',
-    weight: '15%',
+    weight: '17%',
     description: 'Context preservation, escalation rules, error propagation, caching, and human review.',
     modules: [
       'Preserving Critical Information',
@@ -105,6 +105,25 @@ export const courses: Course[] = [
       'Scenario: Developer Productivity Tools',
       'Scenario: Claude Code for CI/CD',
       'Scenario: Structured Data Extraction',
+    ],
+  },
+  {
+    id: '7',
+    title: 'Claude Code Hands-On',
+    domain: 'Practical',
+    weight: 'D2/D3',
+    description: 'Hands-on guide to every Claude Code feature: slash commands, memory, skills, subagents, MCP, hooks, plugins, checkpoints, and the CLI.',
+    modules: [
+      'Slash Commands',
+      'Memory & CLAUDE.md',
+      'Skills',
+      'Subagents',
+      'MCP Integration',
+      'Hooks',
+      'Plugins',
+      'Checkpoints & Rewind',
+      'Advanced Features',
+      'CLI Reference',
     ],
   },
 ]

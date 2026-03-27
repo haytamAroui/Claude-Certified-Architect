@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, BookOpen, Filter, ArrowRight, Tag } from 'lucide-react'
+import { Search, BookOpen, Filter, ChevronRight, Tag } from 'lucide-react'
 import { courses } from '../data/courses'
 
 const allTopics = courses.flatMap((course) =>
@@ -44,8 +44,8 @@ export default function StudyMaterials() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl sm:text-3xl font-semibold text-heading mb-2 flex items-center gap-3">
-          <BookOpen className="w-6 h-6 text-primary" />
+        <h1 className="font-display text-2xl sm:text-3xl font-medium text-heading mb-2 flex items-center gap-3">
+          <BookOpen className="w-5 h-5 text-faint" />
           Study Materials
         </h1>
         <p className="text-muted">
@@ -62,7 +62,7 @@ export default function StudyMaterials() {
             placeholder="Search topics, courses..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-surface-light border border-surface-lighter rounded-lg text-heading placeholder-faint text-sm focus:outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface-light border border-surface-lighter rounded-xl text-heading placeholder-faint text-sm focus:outline-none focus:border-heading/20 transition-colors"
           />
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1 -mb-1">
@@ -94,7 +94,7 @@ export default function StudyMaterials() {
 
       {/* Grouped Results */}
       {filtered.length === 0 ? (
-        <div className="text-center py-16 bg-surface-light border border-surface-lighter rounded-xl">
+        <div className="text-center py-16 bg-surface-light border border-surface-lighter rounded-2xl">
           <Search className="w-10 h-10 text-subtle mx-auto mb-3" />
           <p className="text-muted">No topics match your search</p>
           <button
@@ -111,7 +111,7 @@ export default function StudyMaterials() {
             return (
               <div
                 key={courseId}
-                className="bg-surface-light border border-surface-lighter rounded-xl overflow-hidden"
+                className="bg-surface-light border border-surface-lighter rounded-2xl overflow-hidden"
               >
                 <div className="px-4 sm:px-5 py-3 bg-surface-lighter flex items-center justify-between gap-2 flex-wrap">
                   <div className="flex items-center gap-2 min-w-0 flex-wrap">
@@ -121,7 +121,7 @@ export default function StudyMaterials() {
                     <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">
                       {course.weight}
                     </span>
-                    <h3 className="text-heading font-semibold text-sm ml-1 truncate">
+                    <h3 className="text-heading font-medium text-sm ml-1 truncate">
                       Course {course.id}: {course.title}
                     </h3>
                   </div>
@@ -129,7 +129,7 @@ export default function StudyMaterials() {
                     to={`/course/${courseId}`}
                     className="text-xs text-primary-light hover:text-primary flex items-center gap-1 transition-colors shrink-0"
                   >
-                    Open <ArrowRight className="w-3 h-3" />
+                    Open <ChevronRight className="w-3 h-3" />
                   </Link>
                 </div>
                 <div className="divide-y divide-surface-lighter">

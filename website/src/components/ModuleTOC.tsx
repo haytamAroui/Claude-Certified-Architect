@@ -10,7 +10,7 @@ interface Props {
 export default function ModuleTOC({ modules, activeIndex, completedIndices, onSelect }: Props) {
   return (
     <nav className="w-56 shrink-0 sticky top-6 self-start hidden lg:block">
-      <p className="text-[11px] font-semibold text-faint uppercase tracking-wider mb-3 px-2">
+      <p className="text-[11px] font-medium text-faint uppercase tracking-wider mb-3 px-2">
         Modules
       </p>
       <ol className="space-y-1">
