@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   BookOpen, Terminal, ArrowRight, FileQuestion, Brain, Map,
   CheckCircle, Sun, Moon, Github, ExternalLink, Shield, Layers,
-  Award, Clock, ChevronRight, Play, Coffee,
+  Clock, ChevronRight, Play, Coffee,
 } from 'lucide-react'
 
 function useTheme() {

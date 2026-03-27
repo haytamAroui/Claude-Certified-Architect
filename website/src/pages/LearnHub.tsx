@@ -56,11 +56,6 @@ export default function LearnHub() {
     },
   ]
 
-  const colorMap: Record<string, { bg: string; text: string; border: string; iconBg: string }> = {
-    primary: { bg: 'bg-primary/8', text: 'text-primary', border: 'border-primary/20', iconBg: 'bg-primary/15' },
-    accent: { bg: 'bg-accent/8', text: 'text-accent-light', border: 'border-accent/20', iconBg: 'bg-accent/15' },
-    success: { bg: 'bg-success/8', text: 'text-success', border: 'border-success/20', iconBg: 'bg-success/15' },
-  }
 
   return (
     <div className="space-y-10 animate-fade-in">

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  BookOpen, FileQuestion, CheckCircle, Circle, Trophy, ArrowRight, Map,
+  BookOpen, FileQuestion, CheckCircle, Circle, Trophy, Map,
   Flame, BarChart3, Brain, Award, Zap, Terminal, Play, ChevronRight,
 } from 'lucide-react'
 import { courses } from '../data/courses'
