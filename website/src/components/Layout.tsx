@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import {
   BookOpen, FileQuestion, Home, Menu, X, ExternalLink, Search, Award,
-  Map, Sun, Moon, Star, Github, Brain, Terminal,
+  Map, Sun, Moon, Star, Github, Brain, Terminal, Coffee,
 } from 'lucide-react'
 
 function useTheme() {
@@ -116,6 +116,15 @@ export default function Layout() {
               {light ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
             </button>
             <a
+              href="https://buymeacoffee.com/haytamaroui"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 bg-primary text-white rounded-xl text-xs font-medium hover:bg-primary-dark transition-colors"
+            >
+              <Coffee className="w-3.5 h-3.5" />
+              Buy me tokens
+            </a>
+            <a
               href="https://anthropic.skilljar.com/claude-certified-architect-foundations-access-request"
               target="_blank"
               rel="noopener noreferrer"
@@ -219,7 +228,16 @@ export default function Layout() {
               </NavLink>
             </nav>
 
-            <div className="p-4 border-t border-surface-lighter">
+            <div className="p-4 border-t border-surface-lighter space-y-2">
+              <a
+                href="https://buymeacoffee.com/haytamaroui"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors w-full"
+              >
+                <Coffee className="w-4 h-4" />
+                Buy me tokens
+              </a>
               <a
                 href="https://anthropic.skilljar.com/claude-certified-architect-foundations-access-request"
                 target="_blank"

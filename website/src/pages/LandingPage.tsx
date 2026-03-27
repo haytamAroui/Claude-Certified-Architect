@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   BookOpen, Terminal, ArrowRight, FileQuestion, Brain, Map,
   CheckCircle, Sun, Moon, Github, ExternalLink, Shield, Layers,
-  Award, Clock, ChevronRight, Play,
+  Award, Clock, ChevronRight, Play, Coffee,
 } from 'lucide-react'
 
 function useTheme() {
@@ -90,23 +90,29 @@ export default function LandingPage() {
             <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
               <BookOpen className="w-5 h-5 text-primary" />
             </div>
-            <span className="font-display text-lg font-semibold text-heading tracking-tight hidden sm:block">
+            <span className="font-display text-[15px] font-medium text-heading tracking-tight hidden sm:block">
               Anthropic Academy
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-7">
             <Link to="/dashboard" className="text-sm text-muted hover:text-heading transition-colors">
+              Dashboard
+            </Link>
+            <Link to="/course/1" className="text-sm text-muted hover:text-heading transition-colors">
               Courses
             </Link>
+            <Link to="/course/7" className="text-sm text-muted hover:text-heading transition-colors">
+              Claude Code
+            </Link>
             <Link to="/learn" className="text-sm text-muted hover:text-heading transition-colors">
-              Learn
+              Fun
             </Link>
-            <Link to="/dashboard" className="text-sm text-muted hover:text-heading transition-colors">
-              Practice Exams
+            <Link to="/exam/1" className="text-sm text-muted hover:text-heading transition-colors">
+              Exams
             </Link>
-            <Link to="/roadmap" className="text-sm text-muted hover:text-heading transition-colors">
-              Roadmap
+            <Link to="/materials" className="text-sm text-muted hover:text-heading transition-colors">
+              Resources
             </Link>
           </nav>
 
@@ -118,6 +124,15 @@ export default function LandingPage() {
             >
               {light ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
             </button>
+            <a
+              href="https://buymeacoffee.com/haytamaroui"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 bg-primary text-white rounded-xl text-xs font-medium hover:bg-primary-dark transition-colors"
+            >
+              <Coffee className="w-3.5 h-3.5" />
+              Buy me tokens
+            </a>
             <a
               href="https://github.com/haytamAroui/Claude-Certified-Architect"
               target="_blank"

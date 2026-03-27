@@ -95,6 +95,23 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* ── Study Roadmap Banner ── */}
+      <Link
+        to="/roadmap"
+        className="group flex items-center gap-4 rounded-2xl border border-primary/15 bg-primary/4 p-4 sm:p-5 hover:border-primary/25 hover:bg-primary/6 transition-all"
+      >
+        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+          <Map className="w-5 h-5 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h2 className="text-sm font-medium text-heading">18-Day Study Roadmap</h2>
+          <p className="text-xs text-muted mt-0.5">
+            Follow the day-by-day plan — from foundations to exam day. Track your progress through 5 phases.
+          </p>
+        </div>
+        <ChevronRight className="w-4 h-4 text-primary shrink-0 group-hover:translate-x-0.5 transition-transform" />
+      </Link>
+
       {/* ── Progress ── */}
       <div className="rounded-xl border border-surface-lighter p-5 sm:p-6">
         <div className="flex items-center justify-between mb-3">
@@ -296,35 +313,18 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ── Learn + Roadmap ── */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <Link
-          to="/learn"
-          className="group rounded-xl border border-surface-lighter p-5 hover:shadow-sm transition-all"
-        >
-          <div className="flex items-center gap-3">
-            <Brain className="w-5 h-5 text-faint group-hover:text-primary transition-colors" />
-            <div className="flex-1 min-w-0">
-              <h3 className="text-heading font-medium text-sm">Interactive Learning</h3>
-              <p className="text-muted text-xs">Flashcards, quizzes & key concepts</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-faint group-hover:text-primary transition-colors" />
-          </div>
-        </Link>
-        <Link
-          to="/roadmap"
-          className="group rounded-xl border border-surface-lighter p-5 hover:shadow-sm transition-all"
-        >
-          <div className="flex items-center gap-3">
-            <Map className="w-5 h-5 text-faint group-hover:text-primary transition-colors" />
-            <div className="flex-1 min-w-0">
-              <h3 className="text-heading font-medium text-sm">18-Day Study Roadmap</h3>
-              <p className="text-muted text-xs">Day-by-day plan to exam-ready</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-faint group-hover:text-primary transition-colors" />
-          </div>
-        </Link>
-      </div>
+      {/* ── Interactive Learning ── */}
+      <Link
+        to="/learn"
+        className="group flex items-center gap-3 rounded-xl border border-surface-lighter p-5 hover:shadow-sm transition-all"
+      >
+        <Brain className="w-5 h-5 text-faint group-hover:text-primary transition-colors" />
+        <div className="flex-1 min-w-0">
+          <h3 className="text-heading font-medium text-sm">Interactive Learning</h3>
+          <p className="text-muted text-xs">Flashcards, quizzes & key concepts</p>
+        </div>
+        <ChevronRight className="w-4 h-4 text-faint group-hover:text-primary transition-colors" />
+      </Link>
 
       {/* ── Mock Exams ── */}
       <div>
